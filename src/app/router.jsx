@@ -1,14 +1,18 @@
+import { useAtomValue } from "jotai";
+import { authAtom } from "../modules/auth/atoms/authAtom";
 import { createBrowserRouter, Navigate } from "react-router-dom";
-import { isAuthenticated } from "../modules/shared/utils/authUtils";
-import LoginPage from "../modules/auth/pages/login/Login";
+
+import LoginPage from "../modules/auth/pages/LoginPage";
 import { HomePage } from "../modules/Home/pages/Home";
 
 const ProtectedRoute = ({ children }) => {
-    return isAuthenticated() ? children : <Navigate to="/login" />;
+    const { isAuthenticated } = useAtomValue(authAtom);
+    return isAuthenticated ? children : <Navigate to="/login" />;
 };
 
 const PublicRoute = ({ children }) => {
-    return isAuthenticated() ? <Navigate to="/" /> : children;
+    const { isAuthenticated } = useAtomValue(authAtom);
+    return isAuthenticated ? <Navigate to="/" /> : children;
 };
 
 const NotFoundPage = () => <h1>404 - Página no encontrada</h1>;
@@ -27,7 +31,7 @@ const router = createBrowserRouter([
         path: "/",
         element: (
             <ProtectedRoute>
-                    <HomePage />
+                <HomePage />
             </ProtectedRoute>
         ),
     },

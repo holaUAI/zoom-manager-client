@@ -1,3 +1,5 @@
 {
-  "firebase_hosting": {}
+  "firebase_hosting": {
+    "deploymentHostingUrl": "https://zoom-manager-uai.web.app"
+  }
 }
