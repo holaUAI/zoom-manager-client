@@ -39,7 +39,7 @@ export default function Login() {
                     onChange={(e) => setClave(e.target.value)}
                     required
                 />
-                <button type="submit">Ingresar</button>
+                <button type="submit">Login</button>
                 {error && <p className="error-message">{error}</p>}
             </form>
         </div>
