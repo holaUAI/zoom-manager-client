@@ -3,6 +3,7 @@ import { authAtom } from "../modules/auth/atoms/authAtom";
 import { createBrowserRouter, Navigate } from "react-router-dom";
 
 import LoginPage from "../modules/auth/pages/login/LoginPage";
+import Layout from "../modules/shared/layout/Layout";
 import { HomePage } from "../modules/Home/pages/Home";
 
 const ProtectedRoute = ({ children }) => {
@@ -31,7 +32,9 @@ const router = createBrowserRouter([
         path: "/",
         element: (
             <ProtectedRoute>
-                <HomePage />
+                <Layout>
+                    <HomePage />
+                </Layout>
             </ProtectedRoute>
         ),
     },
