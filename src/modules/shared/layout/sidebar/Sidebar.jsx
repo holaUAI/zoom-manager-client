@@ -1,40 +1,37 @@
-// src/layout/sidebar/Sidebar.jsx
-import { useState } from "react";
 import { Menu } from "lucide-react";
-import { Link, useLocation } from "react-router-dom";
+import { useAtom } from "jotai";
+import { sidebarOpenAtom } from "../../atoms/sidebarAtom";
 import SidebarHeader from "../../partials/sidebar/SidebarHeader";
 import SidebarMenu from "../../partials/sidebar/SidebarMenu";
 import SidebarLogout from "../../partials/sidebar/SidebarLogout";
 
 export default function Sidebar() {
-    const [open, setOpen] = useState(false);
-    const location = useLocation();
+  const [open, setOpen] = useAtom(sidebarOpenAtom);
 
-    const isActive = (path) => location.pathname.startsWith(path);
+  return (
+    <aside
+      className={`h-screen bg-white border-r transition-all duration-300 ease-in-out flex flex-col
+        ${open ? "w-64" : "w-16"}
+        fixed md:static z-50`}
+    >
+      {/* Botón de hamburguesa SIEMPRE visible */}
+      <div className="flex justify-end p-2">
+        <button
+          className="p-2 rounded-md hover:bg-gray-100"
+          onClick={() => setOpen((prev) => !prev)}
+        >
+          <Menu />
+        </button>
+      </div>
 
-    return (
-        <>
-            {/* Botón hamburguesa */}
-            <button
-                className="md:hidden p-3 fixed top-4 left-4 z-50 bg-white shadow rounded-lg"
-                onClick={() => setOpen(!open)}
-            >
-                <Menu />
-            </button>
-
-            {/* Sidebar principal */}
-            <aside
-                className={`fixed md:static z-40 top-0 left-0 h-full bg-white border-r transition-transform duration-300 ease-in-out ${open ? "translate-x-0 w-64" : "-translate-x-full"
-                    } md:translate-x-0 md:w-64`}
-            >
-                <div className="flex flex-col h-full justify-between p-4">
-                    <div>
-                        <SidebarHeader />
-                        <SidebarMenu isActive={isActive} />
-                    </div>
-                    <SidebarLogout />
-                </div>
-            </aside>
-        </>
-    );
+      {/* Contenido */}
+      <div className="flex-1 flex flex-col justify-between px-2 pb-4 overflow-hidden">
+        <div>
+          <SidebarHeader open={open} />
+          <SidebarMenu open={open} />
+        </div>
+        <SidebarLogout open={open} />
+      </div>
+    </aside>
+  );
 }
