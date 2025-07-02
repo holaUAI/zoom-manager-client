@@ -6,6 +6,8 @@ import LoginPage from "../modules/auth/pages/login/LoginPage";
 import Layout from "../modules/shared/layout/Layout";
 import { HomePage } from "../modules/Home/pages/Home";
 
+import ReunionesPage from "../modules/meeting/pages/MeetingsPage";
+
 const ProtectedRoute = ({ children }) => {
     const { isAuthenticated } = useAtomValue(authAtom);
     return isAuthenticated ? children : <Navigate to="/login" />;
@@ -38,6 +40,16 @@ const router = createBrowserRouter([
             </ProtectedRoute>
         ),
     },
+    {
+        path: "/reuniones",
+        element: (
+            <ProtectedRoute>
+                <Layout>
+                    <ReunionesPage />
+                </Layout>
+            </ProtectedRoute>
+        ),
+    }
 ]);
 
 export default router;
