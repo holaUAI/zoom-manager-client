@@ -2,7 +2,7 @@ import { useAtomValue } from "jotai";
 import { authAtom } from "../modules/auth/atoms/authAtom";
 import { createBrowserRouter, Navigate } from "react-router-dom";
 
-import LoginPage from "../modules/auth/pages/LoginPage";
+import LoginPage from "../modules/auth/pages/login/LoginPage";
 import { HomePage } from "../modules/Home/pages/Home";
 
 const ProtectedRoute = ({ children }) => {
