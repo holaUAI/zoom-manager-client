@@ -8,7 +8,7 @@ export default function Layout({ children }) {
     return (
         <div className="flex min-h-screen bg-gray-50">
             <Sidebar />
-            <main className={`flex-1 p-4 overflow-y-auto ${sidebarOpen ? "ml-64" : "ml-0"}`}>
+            <main className={`flex-1 overflow-y-auto ${sidebarOpen ? "m-5" : "m-5"}`}>
                 {children}
             </main>
         </div>
