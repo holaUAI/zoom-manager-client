@@ -7,6 +7,9 @@ import Layout from "../modules/shared/layout/Layout";
 import { HomePage } from "../modules/Home/pages/Home";
 
 import ReunionesPage from "../modules/meeting/pages/MeetingsPage";
+import TeacherPage from "../modules/teachers/pages/TeachersPage";
+import CoursesPage from "../modules/courses/pages/CoursesPage";
+
 
 const ProtectedRoute = ({ children }) => {
     const { isAuthenticated } = useAtomValue(authAtom);
@@ -49,7 +52,27 @@ const router = createBrowserRouter([
                 </Layout>
             </ProtectedRoute>
         ),
-    }
+    },
+    {
+        path: "/docentes",
+        element: (
+            <ProtectedRoute>
+                <Layout>
+                    <TeacherPage />
+                </Layout>
+            </ProtectedRoute>
+        )
+    },
+    {
+        path: "/cursos",
+        element: (
+            <ProtectedRoute>
+                <Layout>
+                    <CoursesPage />
+                </Layout>
+            </ProtectedRoute>
+        )
+    },
 ]);
 
 export default router;

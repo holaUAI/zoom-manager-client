@@ -1,9 +1,9 @@
-import { n8n_api } from "../../shared/api/providers";
+import { ms_meetings } from "../../shared/api/providers";
 
-const URI = "/webhook/api/reuniones"
+const URI = "/ms/v1/meeting"
 
 export const getAll = async () => {
-    const { data } = await n8n_api.get(`${URI}/get-all`);
+    const { data } = await ms_meetings.get(`${URI}/all`);
     return data;
 };
 

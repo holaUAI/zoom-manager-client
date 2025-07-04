@@ -5,6 +5,6 @@ export const useReuniones = () => {
     return useQuery({
         queryKey: ["reuniones"],
         queryFn: getAll,
-        select: (data) => data,
+        select: (res) => res?.data || [],
     });
 };
