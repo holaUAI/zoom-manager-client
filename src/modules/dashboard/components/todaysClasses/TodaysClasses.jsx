@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useMeetings } from "../../hooks/useMeetings";
 import { CalendarDays, Clock } from "lucide-react";
 import { cn } from "../../../../lib/utils";
+import { ClassDetailsModal } from './modalInfo';
 
 const TABS = [
     { key: "en_curso", label: "En curso", color: "bg-green-100", badge: "bg-green-600" },
@@ -36,6 +37,8 @@ function agruparPorEstado(reuniones) {
 export default function TodaysClasses() {
     const { data, isLoading } = useMeetings();
     const [tab, setTab] = useState("en_curso");
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedClass, setSelectedClass] = useState(null);
 
     if (isLoading) return <p>Cargando clases...</p>;
     if (!Array.isArray(data)) return <p>Error al cargar reuniones</p>;
@@ -77,7 +80,11 @@ export default function TodaysClasses() {
                     return (
                         <div
                             key={r.id}
-                            className={cn("rounded-xl p-4 border-l-4", TABS.find(t => t.key === tab).color)}
+                            className={cn("rounded-xl p-4 border-l-4 cursor-pointer hover:shadow-md transition", TABS.find(t => t.key === tab).color)}
+                            onClick={() => {
+                                setSelectedClass(r);
+                                setIsModalOpen(true);
+                            }}
                         >
                             <h3 className="font-semibold mb-1">{r.topic}</h3>
 
@@ -109,6 +116,13 @@ export default function TodaysClasses() {
                     );
                 })}
             </div>
+
+            {/* Modal de detalles */}
+            <ClassDetailsModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                selectedClass={selectedClass}
+            />
         </div>
     );
 }

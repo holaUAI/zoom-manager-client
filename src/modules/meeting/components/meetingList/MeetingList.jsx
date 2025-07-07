@@ -3,17 +3,20 @@ import { useReuniones } from "../../hook/useMeetings";
 import { Video, Clock, User, Search } from "lucide-react";
 
 export default function ReunionesList() {
+    // ✅ TODOS los hooks van al principio
     const { data, isLoading, error } = useReuniones();
     const [busqueda, setBusqueda] = useState("");
 
-    if (isLoading) return <p>Cargando reuniones...</p>;
-    if (error || !Array.isArray(data)) return <p>Error al cargar reuniones</p>;
-
     const reunionesFiltradas = useMemo(() => {
+        if (!Array.isArray(data)) return [];
         return data.filter((r) =>
             r.topic?.toLowerCase().includes(busqueda.toLowerCase())
         );
     }, [data, busqueda]);
+
+    // ✅ Los returns condicionales van DESPUÉS de todos los hooks
+    if (isLoading) return <p>Cargando reuniones...</p>;
+    if (error || !Array.isArray(data)) return <p>Error al cargar reuniones</p>;
 
     // Métricas
     const total = data.length;

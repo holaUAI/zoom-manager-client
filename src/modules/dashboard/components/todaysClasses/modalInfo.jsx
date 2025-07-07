@@ -12,7 +12,6 @@ export function ClassDetailsModal({ isOpen, onClose, selectedClass }) {
     });
   };
 
-  // Función auxiliar para calcular minutos de diferencia entre horas
   const parseTime = (timeStr) => {
     if (!timeStr) return null;
     const [time, modifier] = timeStr.split(' ');
@@ -47,7 +46,6 @@ export function ClassDetailsModal({ isOpen, onClose, selectedClass }) {
 
         <p className="text-sm text-gray-600 mb-6">Información completa de la sesión virtual</p>
 
-        {/* Contenido */}
         <div className="space-y-6">
           {/* Detalles de Horario */}
           <div className="border rounded-lg p-4 bg-gray-50">
@@ -174,7 +172,6 @@ export function ClassDetailsModal({ isOpen, onClose, selectedClass }) {
           )}
         </div>
 
-        {/* Botón de cerrar */}
         <button
           onClick={onClose}
           className="absolute top-3 right-3 text-gray-500 hover:text-gray-800 text-xl"
