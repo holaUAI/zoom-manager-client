@@ -93,8 +93,20 @@ export default function TodaysClasses() {
         setSelectedClass(null);
     };
 
-    if (isLoading) return <p>Cargando clases...</p>;
-    if (!Array.isArray(data)) return <p>Error al cargar reuniones</p>;
+    // Pantalla de carga estilizada
+    if (isLoading) {
+        return (
+            <div className="bg-white rounded-xl shadow p-5 flex flex-col items-center justify-center h-64">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-4"></div>
+                <p className="text-lg text-gray-600">Cargando clases...</p>
+            </div>
+        );
+    }
+
+    // Manejo de error
+    if (!Array.isArray(data)) {
+        return <p className="text-red-500">Error al cargar reuniones</p>;
+    }
 
     const grupos = agruparPorEstado(data);
 
