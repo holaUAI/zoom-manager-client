@@ -1,4 +1,3 @@
-// modalInfo.jsx
 import React from 'react';
 import { Video, Mail, Star, Copy, ExternalLink } from 'lucide-react';
 
@@ -8,8 +7,33 @@ export function ClassDetailsModal({ isOpen, onClose, selectedClass }) {
   const copyToClipboard = (text) => {
     navigator.clipboard.writeText(text).then(() => {
       alert('Link copiado al portapapeles');
+    }).catch(err => {
+      console.error('Error al copiar:', err);
     });
   };
+
+  const parseTime = (timeStr) => {
+    if (!timeStr) return null;
+    const [time, modifier] = timeStr.split(' ');
+    let [hours, minutes] = time.split(':');
+    hours = parseInt(hours);
+    if (modifier === 'a.m.' && hours === 12) hours = 0;
+    if (modifier === 'p.m.' && hours !== 12) hours += 12;
+    return new Date(1970, 0, 1, hours, minutes);
+  };
+
+  const getDelayText = (scheduled, actual) => {
+    if (!scheduled || !actual) return '';
+    const diff = Math.round((actual - scheduled) / 60000);
+    return diff > 0 ? `${diff} minuto${diff !== 1 ? 's' : ''} tarde` : 'A tiempo';
+  };
+
+  const scheduled = selectedClass.scheduledTime ? parseTime(selectedClass.scheduledTime) : null;
+  const opened = selectedClass.openedTime ? parseTime(selectedClass.openedTime) : null;
+  const started = selectedClass.startedTime ? parseTime(selectedClass.startedTime) : null;
+
+  const delayOpened = scheduled && opened ? getDelayText(scheduled, opened) : '';
+  const delayStarted = scheduled && started ? getDelayText(scheduled, started) : '';
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
@@ -22,8 +46,39 @@ export function ClassDetailsModal({ isOpen, onClose, selectedClass }) {
 
         <p className="text-sm text-gray-600 mb-6">Información completa de la sesión virtual</p>
 
-        {/* Contenido */}
         <div className="space-y-6">
+          {/* Detalles de Horario */}
+          <div className="border rounded-lg p-4 bg-gray-50">
+            <h3 className="font-medium text-lg mb-4">Detalles de Horario</h3>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label className="text-sm font-medium text-gray-600">Fecha y Hora de Programación de Clase</label>
+                <p className="text-sm mt-1">{selectedClass.scheduledTime || '-'}</p>
+              </div>
+
+              {(selectedClass.status === "Finalizado" || selectedClass.status === "En curso") && (
+                <>
+                  <div>
+                    <label className="text-sm font-medium text-gray-600">Hora de Apertura</label>
+                    <p className="text-sm mt-1 flex items-center justify-between">
+                      {selectedClass.openedTime || '-'}
+                      {delayOpened && <span className="text-xs text-red-600 ml-2">Entró {delayOpened}</span>}
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="text-sm font-medium text-gray-600">Hora de Inicio de Clase</label>
+                    <p className="text-sm mt-1 flex items-center justify-between">
+                      {selectedClass.startedTime || '-'}
+                      {delayStarted && <span className="text-xs text-red-600 ml-2">Inició {delayStarted}</span>}
+                    </p>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+
           {/* Información General y Detalles de Clase */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Información General */}
@@ -117,12 +172,13 @@ export function ClassDetailsModal({ isOpen, onClose, selectedClass }) {
           )}
         </div>
 
-        {/* Botón de cerrar */}
         <button
           onClick={onClose}
           className="absolute top-3 right-3 text-gray-500 hover:text-gray-800 text-xl"
+          aria-label="Cerrar modal"
         >
-          &times;
+          <span className="sr-only">Cerrar</span>
+          <span aria-hidden="true">&times;</span>
         </button>
       </div>
     </div>
