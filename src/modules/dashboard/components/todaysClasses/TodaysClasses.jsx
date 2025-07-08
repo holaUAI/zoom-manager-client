@@ -2,12 +2,27 @@ import { useState } from "react";
 import { useMeetings } from "../../hooks/useMeetings";
 import { CalendarDays, Clock } from "lucide-react";
 import { cn } from "../../../../lib/utils";
-import { ClassDetailsModal } from "./modalInfo"; // Importar desde el archivo correcto
+import { ClassDetailsModal } from "./modalInfo";
 
 const TABS = [
-    { key: "en_curso", label: "En curso", color: "bg-green-100", badge: "bg-green-600" },
-    { key: "finalizado", label: "Finalizado", color: "bg-gray-100", badge: "bg-slate-400" },
-    { key: "proximo", label: "Próximo", color: "bg-orange-100", badge: "bg-orange-500" },
+    { 
+        key: "en_curso", 
+        label: "En curso", 
+        activeClass: "bg-green-500 text-white", 
+        inactiveClass: "bg-green-100 text-green-800 hover:bg-green-200" 
+    },
+    { 
+        key: "finalizado", 
+        label: "Finalizado", 
+        activeClass: "bg-gray-500 text-white", 
+        inactiveClass: "bg-gray-100 text-gray-800 hover:bg-gray-200" 
+    },
+    { 
+        key: "proximo", 
+        label: "Próximo", 
+        activeClass: "bg-blue-500 text-white", 
+        inactiveClass: "bg-blue-100 text-blue-800 hover:bg-blue-200" 
+    },
 ];
 
 function agruparPorEstado(reuniones) {
@@ -34,12 +49,10 @@ function agruparPorEstado(reuniones) {
     return grupos;
 }
 
-// Función para convertir los datos de la API al formato esperado por el modal
 function convertToModalFormat(meeting) {
     const inicio = new Date(meeting.start_time);
     const fin = new Date(inicio.getTime() + meeting.duration * 60000);
     
-    // Determinar el estado basado en el tiempo actual
     const ahora = new Date();
     let status;
     if (inicio <= ahora && ahora <= fin) {
@@ -67,9 +80,9 @@ function convertToModalFormat(meeting) {
             minute: "2-digit",
             hour12: true 
         }).replace(/AM|PM/i, match => match.toLowerCase() === 'am' ? 'a.m.' : 'p.m.') : null,
-        specialty: "Especialidad UAI", // Puedes ajustar esto según tus datos
+        specialty: "Especialidad UAI",
         sede: meeting.timezone || "Sede Principal",
-        professor: "Docente UAI", // Puedes ajustar esto según tus datos
+        professor: "Docente UAI",
         hostEmail: meeting.host_email || "docente@uai.edu",
         status: status,
         joinUrl: meeting.join_url || ""
@@ -93,7 +106,6 @@ export default function TodaysClasses() {
         setSelectedClass(null);
     };
 
-    // Pantalla de carga estilizada
     if (isLoading) {
         return (
             <div className="bg-white rounded-xl shadow p-5 flex flex-col items-center justify-center h-64">
@@ -103,7 +115,6 @@ export default function TodaysClasses() {
         );
     }
 
-    // Manejo de error
     if (!Array.isArray(data)) {
         return <p className="text-red-500">Error al cargar reuniones</p>;
     }
@@ -117,14 +128,14 @@ export default function TodaysClasses() {
                     <CalendarDays size={20} /> Clases de Hoy
                 </h2>
 
-                <div className="grid grid-cols-4 gap-2 mb-4 text-sm font-medium">
+                <div className="grid grid-cols-3 gap-2 mb-4 text-sm font-medium">
                     {TABS.map((t) => (
                         <button
                             key={t.key}
                             onClick={() => setTab(t.key)}
                             className={cn(
                                 "py-2 rounded-md text-center transition",
-                                tab === t.key ? "bg-gray-200" : "bg-gray-100 hover:bg-gray-200"
+                                tab === t.key ? t.activeClass : t.inactiveClass
                             )}
                         >
                             {t.label}
@@ -149,7 +160,9 @@ export default function TodaysClasses() {
                                 onClick={() => handleClassClick(r)}
                                 className={cn(
                                     "rounded-xl p-4 border-l-4 cursor-pointer transition-all hover:shadow-md hover:scale-[1.02]",
-                                    TABS.find(t => t.key === tab).color
+                                    tab === "en_curso" ? "border-green-500 bg-green-50" :
+                                    tab === "finalizado" ? "border-gray-500 bg-gray-50" :
+                                    "border-blue-500 bg-blue-50"
                                 )}
                             >
                                 <h3 className="font-semibold mb-1">{r.topic}</h3>
@@ -172,10 +185,12 @@ export default function TodaysClasses() {
                                     <span
                                         className={cn(
                                             "text-white text-xs font-semibold px-2 py-1 rounded-full",
-                                            TABS.find(t => t.key === tab).badge
+                                            tab === "en_curso" ? "bg-green-500" :
+                                            tab === "finalizado" ? "bg-gray-500" :
+                                            "bg-blue-500"
                                         )}
                                     >
-                                        {TABS.find(t => t.key === tab).label}
+                                        {TABS.find(t => t.key === tab)?.label}
                                     </span>
                                 </div>
                             </div>
@@ -184,7 +199,6 @@ export default function TodaysClasses() {
                 </div>
             </div>
 
-            {/* Modal */}
             <ClassDetailsModal
                 isOpen={isModalOpen}
                 onClose={handleCloseModal}
