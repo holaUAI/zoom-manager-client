@@ -147,17 +147,6 @@ export default function TeacherPage({ onNavigate }) {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center space-x-4">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => handleNavigate("dashboard")}
-              className="flex items-center space-x-2"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"></path>
-              </svg>
-              <span className="hidden sm:inline">Volver al Dashboard</span>
-            </Button>
             <div>
               <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Gestión de Profesores</h1>
               <p className="text-sm sm:text-base text-gray-600">Administra y revisa la información del cuerpo docente</p>
