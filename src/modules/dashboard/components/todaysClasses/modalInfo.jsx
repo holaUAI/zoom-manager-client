@@ -1,6 +1,5 @@
-// modalInfo.jsx
 import React from 'react';
-import { Video, Mail, Star, Copy, ExternalLink } from 'lucide-react';
+import { Video, Mail, Star, Copy, ExternalLink, Clock, Calendar, Play, AlertTriangle } from 'lucide-react';
 
 export function ClassDetailsModal({ isOpen, onClose, selectedClass }) {
   if (!isOpen || !selectedClass) return null;
@@ -8,8 +7,34 @@ export function ClassDetailsModal({ isOpen, onClose, selectedClass }) {
   const copyToClipboard = (text) => {
     navigator.clipboard.writeText(text).then(() => {
       alert('Link copiado al portapapeles');
+    }).catch(err => {
+      console.error('Error al copiar:', err);
     });
   };
+
+  // Función auxiliar para calcular minutos de diferencia entre horas
+  const parseTime = (timeStr) => {
+    if (!timeStr) return null;
+    const [time, modifier] = timeStr.split(' ');
+    let [hours, minutes] = time.split(':');
+    hours = parseInt(hours);
+    if (modifier === 'a.m.' && hours === 12) hours = 0;
+    if (modifier === 'p.m.' && hours !== 12) hours += 12;
+    return new Date(1970, 0, 1, hours, minutes);
+  };
+
+  const getDelayText = (scheduled, actual) => {
+    if (!scheduled || !actual) return '';
+    const diff = Math.round((actual - scheduled) / 60000);
+    return diff > 0 ? `${diff} minuto${diff !== 1 ? 's' : ''} tarde` : 'A tiempo';
+  };
+
+  const scheduled = selectedClass.scheduledTime ? parseTime(selectedClass.scheduledTime) : null;
+  const opened = selectedClass.openedTime ? parseTime(selectedClass.openedTime) : null;
+  const started = selectedClass.startedTime ? parseTime(selectedClass.startedTime) : null;
+
+  const delayOpened = scheduled && opened ? getDelayText(scheduled, opened) : '';
+  const delayStarted = scheduled && started ? getDelayText(scheduled, started) : '';
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
@@ -24,6 +49,116 @@ export function ClassDetailsModal({ isOpen, onClose, selectedClass }) {
 
         {/* Contenido */}
         <div className="space-y-6">
+          {/* Detalles de Horario MEJORADO */}
+          <div className="border rounded-xl p-6 bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
+            <div className="flex items-center space-x-2 mb-6">
+              <Clock className="h-6 w-6 text-blue-600" />
+              <h3 className="font-semibold text-xl text-gray-800">Detalles de Horario</h3>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Fecha y Hora Programada */}
+              <div className="relative">
+                <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center space-x-2">
+                      <Calendar className="h-5 w-5 text-blue-600" />
+                      <span className="text-sm font-medium text-gray-600">Programada</span>
+                    </div>
+                    <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                  </div>
+                  <p className="text-lg font-semibold text-gray-800">{selectedClass.scheduledTime || '-'}</p>
+                  <p className="text-xs text-gray-500 mt-1">Hora oficial de inicio</p>
+                </div>
+              </div>
+
+              {/* Hora de Apertura */}
+              {(selectedClass.status === "Finalizado" || selectedClass.status === "En curso") && (
+                <div className="relative">
+                  <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center space-x-2">
+                        <Clock className="h-5 w-5 text-green-600" />
+                        <span className="text-sm font-medium text-gray-600">Apertura</span>
+                      </div>
+                      <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                    </div>
+                    <p className="text-lg font-semibold text-gray-800">{selectedClass.openedTime || '-'}</p>
+                    {delayOpened && (
+                      <div className="mt-2 flex items-center space-x-1">
+                        {delayOpened.includes('tarde') ? (
+                          <AlertTriangle className="h-4 w-4 text-orange-500" />
+                        ) : (
+                          <span className="w-4 h-4 bg-green-500 rounded-full flex items-center justify-center">
+                            <span className="text-white text-xs">✓</span>
+                          </span>
+                        )}
+                        <span className={`text-xs font-medium ${
+                          delayOpened.includes('tarde') ? 'text-orange-600' : 'text-green-600'
+                        }`}>
+                          {delayOpened.includes('tarde') ? `Entró ${delayOpened}` : 'Entró a tiempo'}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Hora de Inicio */}
+              {(selectedClass.status === "Finalizado" || selectedClass.status === "En curso") && (
+                <div className="relative">
+                  <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center space-x-2">
+                        <Play className="h-5 w-5 text-purple-600" />
+                        <span className="text-sm font-medium text-gray-600">Inicio</span>
+                      </div>
+                      <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
+                    </div>
+                    <p className="text-lg font-semibold text-gray-800">{selectedClass.startedTime || '-'}</p>
+                    {delayStarted && (
+                      <div className="mt-2 flex items-center space-x-1">
+                        {delayStarted.includes('tarde') ? (
+                          <AlertTriangle className="h-4 w-4 text-orange-500" />
+                        ) : (
+                          <span className="w-4 h-4 bg-green-500 rounded-full flex items-center justify-center">
+                            <span className="text-white text-xs">✓</span>
+                          </span>
+                        )}
+                        <span className={`text-xs font-medium ${
+                          delayStarted.includes('tarde') ? 'text-orange-600' : 'text-green-600'
+                        }`}>
+                          {delayStarted.includes('tarde') ? `Inició ${delayStarted}` : 'Inició a tiempo'}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Línea de tiempo visual para clases finalizadas o en curso */}
+            {(selectedClass.status === "Finalizado" || selectedClass.status === "En curso") && (
+              <div className="mt-6 pt-4 border-t border-blue-200">
+                <div className="flex items-center justify-between relative">
+                  <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-gray-300 -translate-y-1/2"></div>
+                  <div className="absolute top-1/2 left-0 w-1/3 h-0.5 bg-blue-500 -translate-y-1/2"></div>
+                  <div className="absolute top-1/2 left-1/3 w-1/3 h-0.5 bg-green-500 -translate-y-1/2"></div>
+                  <div className="absolute top-1/2 left-2/3 w-1/3 h-0.5 bg-purple-500 -translate-y-1/2"></div>
+                  
+                  <div className="bg-blue-500 w-4 h-4 rounded-full border-2 border-white shadow-md z-10"></div>
+                  <div className="bg-green-500 w-4 h-4 rounded-full border-2 border-white shadow-md z-10"></div>
+                  <div className="bg-purple-500 w-4 h-4 rounded-full border-2 border-white shadow-md z-10"></div>
+                </div>
+                <div className="flex items-center justify-between mt-2">
+                  <span className="text-xs text-gray-500">Programada</span>
+                  <span className="text-xs text-gray-500">Apertura</span>
+                  <span className="text-xs text-gray-500">Inicio</span>
+                </div>
+              </div>
+            )}
+          </div>
+
           {/* Información General y Detalles de Clase */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Información General */}
@@ -121,10 +256,13 @@ export function ClassDetailsModal({ isOpen, onClose, selectedClass }) {
         <button
           onClick={onClose}
           className="absolute top-3 right-3 text-gray-500 hover:text-gray-800 text-xl"
+          aria-label="Cerrar modal"
         >
-          &times;
+          <span className="sr-only">Cerrar</span>
+          <span aria-hidden="true">&times;</span>
         </button>
       </div>
     </div>
   );
 }
+
