@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { Video, Clock, User, Search, Loader2, Calendar, Users, TrendingUp } from "lucide-react";
+import { Video, Clock, User, Search, Loader2, Calendar, Users, Filter, ChevronDown } from "lucide-react";
 import { ClassDetailsModal } from "/home/user/zoom-manager/src/modules/dashboard/components/todaysClasses/modalInfo.jsx";
 
 // Simulando el hook useReuniones para la demo
@@ -55,13 +55,23 @@ const useReuniones = () => {
       startedTime: "10:02 a.m.",
       specialty: "Desarrollo Ágil",
       sede: "Remoto"
+    },
+    {
+      uuid: "5",
+      topic: "Reunión de Marketing",
+      host_email: "marketing@empresa.com",
+      duration: 60,
+      status: "not_started",
+      scheduledTime: "09:00 a.m.",
+      specialty: "Marketing",
+      sede: "Oficina Central"
     }
   ];
   
   return { data, isLoading, error: null };
 };
 
-// Componente de pantalla de carga (mejorado y centrado)
+// Componente de pantalla de carga
 const LoadingScreen = () => (
   <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-100 flex items-center justify-center">
     <div className="text-center space-y-6">
@@ -96,19 +106,44 @@ export default function ReunionesList() {
     const [busqueda, setBusqueda] = useState("");
     const [selectedReunion, setSelectedReunion] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [filtroActivo, setFiltroActivo] = useState("todas");
+    const [mostrarFiltros, setMostrarFiltros] = useState(false);
 
     const reunionesFiltradas = useMemo(() => {
         if (!Array.isArray(data)) return [];
-        return data.filter((r) =>
+        
+        let resultados = data.filter((r) =>
             r.topic?.toLowerCase().includes(busqueda.toLowerCase())
         );
-    }, [data, busqueda]);
+        
+        // Aplicar filtro de estado
+        switch(filtroActivo) {
+            case "en_curso":
+                resultados = resultados.filter(r => r.status === "started");
+                break;
+            case "proximo":
+                resultados = resultados.filter(r => r.status === "waiting");
+                break;
+            case "sin_iniciar":
+                resultados = resultados.filter(r => r.status === "not_started");
+                break;
+            case "finalizado":
+                resultados = resultados.filter(r => r.status === "ended");
+                break;
+            default:
+                // "todas" - no filtrar por estado
+                break;
+        }
+        
+        return resultados;
+    }, [data, busqueda, filtroActivo]);
 
     const handleReunionClick = (reunion) => {
         setSelectedReunion({
             ...reunion,
             status: reunion.status === "started" ? "En curso" : 
-                   reunion.status === "waiting" ? "Programado" : "Finalizado",
+                   reunion.status === "waiting" ? "Programado" : 
+                   reunion.status === "not_started" ? "Sin iniciar" : "Finalizado",
             hostEmail: reunion.host_email,
             joinUrl: `https://zoom.us/j/${reunion.uuid}`,
             professor: reunion.host_email.split('@')[0]
@@ -138,10 +173,10 @@ export default function ReunionesList() {
 
     // Métricas
     const total = data.length;
-    const promedioDuracion = Math.round(
-        data.reduce((sum, r) => sum + (r.duration || 0), 0) / (data.length || 1)
-    );
     const activas = data.filter((r) => r.status === "started").length;
+    const proximas = data.filter((r) => r.status === "waiting").length;
+    const sinIniciar = data.filter((r) => r.status === "not_started").length;
+    const finalizadas = data.filter((r) => r.status === "ended").length;
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-100">
@@ -164,7 +199,7 @@ export default function ReunionesList() {
                 </div>
 
                 {/* Estadísticas compactas */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
                     <div className="bg-white/80 p-4 shadow-lg rounded-xl border border-purple-100 backdrop-blur-sm">
                         <div className="flex items-center justify-between">
                             <div>
@@ -177,22 +212,10 @@ export default function ReunionesList() {
                         </div>
                     </div>
                     
-                    <div className="bg-white/80 p-4 shadow-lg rounded-xl border border-blue-100 backdrop-blur-sm">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-xs font-medium text-gray-500">Duración Promedio</p>
-                                <p className="text-2xl font-bold text-blue-600">{promedioDuracion} min</p>
-                            </div>
-                            <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center">
-                                <TrendingUp className="w-5 h-5 text-white" />
-                            </div>
-                        </div>
-                    </div>
-                    
                     <div className="bg-white/80 p-4 shadow-lg rounded-xl border border-green-100 backdrop-blur-sm">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-xs font-medium text-gray-500">Reuniones Activas</p>
+                                <p className="text-xs font-medium text-gray-500">En Curso</p>
                                 <p className="text-2xl font-bold text-green-600">{activas}</p>
                             </div>
                             <div className="w-10 h-10 bg-gradient-to-r from-green-500 to-green-600 rounded-full flex items-center justify-center">
@@ -200,11 +223,35 @@ export default function ReunionesList() {
                             </div>
                         </div>
                     </div>
+                    
+                    <div className="bg-white/80 p-4 shadow-lg rounded-xl border border-yellow-100 backdrop-blur-sm">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <p className="text-xs font-medium text-gray-500">Próximas</p>
+                                <p className="text-2xl font-bold text-yellow-600">{proximas}</p>
+                            </div>
+                            <div className="w-10 h-10 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-full flex items-center justify-center">
+                                <Clock className="w-5 h-5 text-white" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="bg-white/80 p-4 shadow-lg rounded-xl border border-red-100 backdrop-blur-sm">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <p className="text-xs font-medium text-gray-500">Sin Iniciar</p>
+                                <p className="text-2xl font-bold text-red-600">{sinIniciar}</p>
+                            </div>
+                            <div className="w-10 h-10 bg-gradient-to-r from-red-500 to-red-600 rounded-full flex items-center justify-center">
+                                <Clock className="w-5 h-5 text-white" />
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                {/* Barra de búsqueda compacta */}
-                <div className="max-w-xl mx-auto">
-                    <div className="relative">
+                {/* Barra de búsqueda compacta con botón de filtros */}
+                <div className="max-w-2xl mx-auto flex gap-2 relative">
+                    <div className="relative flex-1">
                         <Search className="absolute top-3 left-3 text-gray-400" size={18} />
                         <input
                             type="text"
@@ -214,7 +261,89 @@ export default function ReunionesList() {
                             className="w-full pl-10 pr-4 py-2 rounded-xl border-2 border-gray-200 shadow-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 text-sm bg-white/80 backdrop-blur-sm"
                         />
                     </div>
+                    <div className="relative">
+                        <button 
+                            onClick={() => setMostrarFiltros(!mostrarFiltros)}
+                            className="flex items-center justify-center px-4 py-2 rounded-xl border-2 border-gray-200 shadow-md hover:shadow-lg transition-all duration-300 bg-white/80 backdrop-blur-sm text-gray-600 hover:text-purple-600 hover:border-purple-300"
+                        >
+                            <Filter className="w-5 h-5 mr-2" />
+                            <span className="text-sm font-medium">Filtros</span>
+                            <ChevronDown className={`w-4 h-4 ml-1 transition-transform ${mostrarFiltros ? 'rotate-180' : ''}`} />
+                        </button>
+                        
+                        {mostrarFiltros && (
+                            <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10 border border-gray-200">
+                                <div className="py-1">
+                                    <button
+                                        onClick={() => {
+                                            setFiltroActivo("todas");
+                                            setMostrarFiltros(false);
+                                        }}
+                                        className={`block w-full text-left px-4 py-2 text-sm ${filtroActivo === "todas" ? 'bg-purple-50 text-purple-700' : 'text-gray-700 hover:bg-gray-100'}`}
+                                    >
+                                        Todas las reuniones
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            setFiltroActivo("en_curso");
+                                            setMostrarFiltros(false);
+                                        }}
+                                        className={`block w-full text-left px-4 py-2 text-sm ${filtroActivo === "en_curso" ? 'bg-purple-50 text-purple-700' : 'text-gray-700 hover:bg-gray-100'}`}
+                                    >
+                                        En curso
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            setFiltroActivo("proximo");
+                                            setMostrarFiltros(false);
+                                        }}
+                                        className={`block w-full text-left px-4 py-2 text-sm ${filtroActivo === "proximo" ? 'bg-purple-50 text-purple-700' : 'text-gray-700 hover:bg-gray-100'}`}
+                                    >
+                                        Próximas
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            setFiltroActivo("sin_iniciar");
+                                            setMostrarFiltros(false);
+                                        }}
+                                        className={`block w-full text-left px-4 py-2 text-sm ${filtroActivo === "sin_iniciar" ? 'bg-purple-50 text-purple-700' : 'text-gray-700 hover:bg-gray-100'}`}
+                                    >
+                                        Sin iniciar
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            setFiltroActivo("finalizado");
+                                            setMostrarFiltros(false);
+                                        }}
+                                        className={`block w-full text-left px-4 py-2 text-sm ${filtroActivo === "finalizado" ? 'bg-purple-50 text-purple-700' : 'text-gray-700 hover:bg-gray-100'}`}
+                                    >
+                                        Finalizadas
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+                    </div>
                 </div>
+
+                {/* Indicador de filtro activo */}
+                {filtroActivo !== "todas" && (
+                    <div className="max-w-2xl mx-auto flex justify-start">
+                        <div className="inline-flex items-center bg-white/80 px-3 py-1 rounded-full text-sm font-medium text-purple-700 border border-purple-200 shadow-sm">
+                            <span className="mr-2">
+                                {filtroActivo === "en_curso" && "Filtrado: En curso"}
+                                {filtroActivo === "proximo" && "Filtrado: Próximas"}
+                                {filtroActivo === "sin_iniciar" && "Filtrado: Sin iniciar"}
+                                {filtroActivo === "finalizado" && "Filtrado: Finalizadas"}
+                            </span>
+                            <button 
+                                onClick={() => setFiltroActivo("todas")}
+                                className="text-purple-500 hover:text-purple-700"
+                            >
+                                ×
+                            </button>
+                        </div>
+                    </div>
+                )}
 
                 {/* Lista de Reuniones con scroll */}
                 <div className="h-[calc(100vh-340px)] overflow-y-auto">
@@ -259,16 +388,20 @@ export default function ReunionesList() {
                                                     ? "bg-gradient-to-r from-green-400 to-green-500 text-white shadow-md"
                                                     : reunion.status === "waiting"
                                                     ? "bg-gradient-to-r from-yellow-400 to-orange-400 text-white shadow-md"
+                                                    : reunion.status === "not_started"
+                                                    ? "bg-gradient-to-r from-red-400 to-red-500 text-white shadow-md"
                                                     : "bg-gradient-to-r from-gray-400 to-gray-500 text-white shadow-md"
                                                 }`}
                                         >
                                             <span className={`w-1.5 h-1.5 rounded-full mr-1.5 ${
                                                 reunion.status === "started" ? "bg-green-200 animate-pulse" :
                                                 reunion.status === "waiting" ? "bg-yellow-200 animate-pulse" :
+                                                reunion.status === "not_started" ? "bg-red-200 animate-pulse" :
                                                 "bg-gray-200"
                                             }`}></span>
-                                            {reunion.status === "started" ? "En vivo" : 
-                                             reunion.status === "waiting" ? "Esperando" : "Finalizada"}
+                                            {reunion.status === "started" ? "En curso" : 
+                                             reunion.status === "waiting" ? "Próximo" : 
+                                             reunion.status === "not_started" ? "Sin iniciar" : "Finalizada"}
                                         </span>
                                     </div>
                                 </div>
@@ -278,13 +411,21 @@ export default function ReunionesList() {
                 </div>
 
                 {/* Mensaje cuando no hay resultados */}
-                {reunionesFiltradas.length === 0 && busqueda && (
+                {reunionesFiltradas.length === 0 && (
                     <div className="text-center py-8">
                         <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-2">
                             <Search className="w-6 h-6 text-gray-400" />
                         </div>
-                        <h3 className="text-lg font-semibold text-gray-600 mb-1">No se encontraron reuniones</h3>
-                        <p className="text-sm text-gray-500">Intenta con otro término</p>
+                        <h3 className="text-lg font-semibold text-gray-600 mb-1">
+                            {busqueda 
+                                ? "No se encontraron reuniones con ese criterio" 
+                                : "No hay reuniones que coincidan con el filtro"}
+                        </h3>
+                        <p className="text-sm text-gray-500">
+                            {busqueda 
+                                ? "Intenta con otro término de búsqueda" 
+                                : "Prueba con otro filtro o verifica más tarde"}
+                        </p>
                     </div>
                 )}
             </div>
