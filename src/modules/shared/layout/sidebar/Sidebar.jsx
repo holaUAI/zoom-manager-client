@@ -9,11 +9,11 @@ export default function Sidebar() {
   const [open, setOpen] = useAtom(sidebarOpenAtom);
 
   return (
-    <aside
-      className={`h-screen bg-white border-r transition-all duration-300 ease-in-out flex flex-col
-        ${open ? "w-64" : "w-16"}
-        fixed md:static z-50`}
-    >
+      <aside
+        className={`h-screen bg-white border-r border-white transition-all duration-300 ease-in-out flex flex-col
+          ${open ? "w-64" : "w-16"}
+          fixed top-0 left-0 z-50`}
+      >
       {/* Botón de hamburguesa SIEMPRE visible */}
       <div className="flex justify-end p-2">
         <button
@@ -24,8 +24,8 @@ export default function Sidebar() {
         </button>
       </div>
 
-      {/* Contenido */}
-      <div className="flex-1 flex flex-col justify-between px-2 pb-4 overflow-hidden">
+      {/* Contenido - Asegura scroll interno si es necesario */}
+      <div className="flex-1 flex flex-col justify-between px-2 pb-4 overflow-y-auto">
         <div>
           <SidebarHeader open={open} />
           <SidebarMenu open={open} />
