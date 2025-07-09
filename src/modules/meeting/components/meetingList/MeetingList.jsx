@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { Video, Clock, User, Search, Loader2, Calendar, Users, TrendingUp } from "lucide-react";
+import { ClassDetailsModal } from "/home/user/zoom-manager/src/modules/dashboard/components/todaysClasses/modalInfo.jsx";
 
 // Simulando el hook useReuniones para la demo
 const useReuniones = () => {
@@ -14,28 +15,46 @@ const useReuniones = () => {
       topic: "Reunión de Planificación Q1",
       host_email: "manager@empresa.com",
       duration: 45,
-      status: "started"
+      status: "started",
+      scheduledTime: "09:00 a.m.",
+      openedTime: "09:02 a.m.",
+      startedTime: "09:05 a.m.",
+      specialty: "Planificación estratégica",
+      sede: "Oficina Central"
     },
     {
       uuid: "2", 
       topic: "Demo del Producto",
       host_email: "ventas@empresa.com",
       duration: 30,
-      status: "waiting"
+      status: "waiting",
+      scheduledTime: "11:00 a.m.",
+      specialty: "Ventas",
+      sede: "Virtual"
     },
     {
       uuid: "3",
       topic: "Revisión de Código",
       host_email: "dev@empresa.com", 
       duration: 60,
-      status: "ended"
+      status: "ended",
+      scheduledTime: "02:00 p.m.",
+      openedTime: "02:00 p.m.",
+      startedTime: "02:03 p.m.",
+      specialty: "Desarrollo",
+      sede: "Remoto"
     },
     {
       uuid: "4",
       topic: "Standup Diario",
       host_email: "scrum@empresa.com",
       duration: 15,
-      status: "started"
+      status: "started",
+      scheduledTime: "10:00 a.m.",
+      openedTime: "10:01 a.m.",
+      startedTime: "10:02 a.m.",
+      specialty: "Desarrollo Ágil",
+      sede: "Remoto"
     }
   ];
   
@@ -46,7 +65,6 @@ const useReuniones = () => {
 const LoadingScreen = () => (
   <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-100 flex items-center justify-center">
     <div className="text-center space-y-6">
-      {/* Contenedor del loader centrado */}
       <div className="flex justify-center">
         <div className="relative">
           <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full animate-pulse"></div>
@@ -55,7 +73,6 @@ const LoadingScreen = () => (
         </div>
       </div>
       
-      {/* Texto */}
       <div className="space-y-2">
         <h2 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
           Cargando Reuniones
@@ -65,7 +82,6 @@ const LoadingScreen = () => (
         </p>
       </div>
       
-      {/* Puntos animados */}
       <div className="flex justify-center space-x-1">
         <div className="w-2 h-2 bg-purple-500 rounded-full animate-bounce"></div>
         <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
@@ -78,6 +94,8 @@ const LoadingScreen = () => (
 export default function ReunionesList() {
     const { data, isLoading, error } = useReuniones();
     const [busqueda, setBusqueda] = useState("");
+    const [selectedReunion, setSelectedReunion] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const reunionesFiltradas = useMemo(() => {
         if (!Array.isArray(data)) return [];
@@ -85,6 +103,23 @@ export default function ReunionesList() {
             r.topic?.toLowerCase().includes(busqueda.toLowerCase())
         );
     }, [data, busqueda]);
+
+    const handleReunionClick = (reunion) => {
+        setSelectedReunion({
+            ...reunion,
+            status: reunion.status === "started" ? "En curso" : 
+                   reunion.status === "waiting" ? "Programado" : "Finalizado",
+            hostEmail: reunion.host_email,
+            joinUrl: `https://zoom.us/j/${reunion.uuid}`,
+            professor: reunion.host_email.split('@')[0]
+        });
+        setIsModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+        setSelectedReunion(null);
+    };
 
     if (isLoading) return <LoadingScreen />;
     if (error || !Array.isArray(data)) {
@@ -110,6 +145,13 @@ export default function ReunionesList() {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-100">
+            {/* Modal de detalles */}
+            <ClassDetailsModal 
+                isOpen={isModalOpen} 
+                onClose={closeModal} 
+                selectedClass={selectedReunion} 
+            />
+            
             <div className="container mx-auto px-4 py-6 space-y-6">
                 {/* Header compacto */}
                 <div className="text-center space-y-2">
@@ -123,7 +165,7 @@ export default function ReunionesList() {
 
                 {/* Estadísticas compactas */}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <div className="bg-white p-4 shadow-lg rounded-xl border border-purple-100">
+                    <div className="bg-white/80 p-4 shadow-lg rounded-xl border border-purple-100 backdrop-blur-sm">
                         <div className="flex items-center justify-between">
                             <div>
                                 <p className="text-xs font-medium text-gray-500">Total Reuniones</p>
@@ -135,7 +177,7 @@ export default function ReunionesList() {
                         </div>
                     </div>
                     
-                    <div className="bg-white p-4 shadow-lg rounded-xl border border-blue-100">
+                    <div className="bg-white/80 p-4 shadow-lg rounded-xl border border-blue-100 backdrop-blur-sm">
                         <div className="flex items-center justify-between">
                             <div>
                                 <p className="text-xs font-medium text-gray-500">Duración Promedio</p>
@@ -147,7 +189,7 @@ export default function ReunionesList() {
                         </div>
                     </div>
                     
-                    <div className="bg-white p-4 shadow-lg rounded-xl border border-green-100">
+                    <div className="bg-white/80 p-4 shadow-lg rounded-xl border border-green-100 backdrop-blur-sm">
                         <div className="flex items-center justify-between">
                             <div>
                                 <p className="text-xs font-medium text-gray-500">Reuniones Activas</p>
@@ -169,7 +211,7 @@ export default function ReunionesList() {
                             placeholder="Buscar reunión..."
                             value={busqueda}
                             onChange={(e) => setBusqueda(e.target.value)}
-                            className="w-full pl-10 pr-4 py-2 rounded-xl border-2 border-gray-200 shadow-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 text-sm"
+                            className="w-full pl-10 pr-4 py-2 rounded-xl border-2 border-gray-200 shadow-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 text-sm bg-white/80 backdrop-blur-sm"
                         />
                     </div>
                 </div>
@@ -180,7 +222,9 @@ export default function ReunionesList() {
                         {reunionesFiltradas.map((reunion, i) => (
                             <div
                                 key={`${reunion.uuid}-${i}`}
-                                className="bg-white p-4 border rounded-lg shadow-md hover:shadow-lg transition-all duration-300 border-gray-100"
+                                className="bg-white/80 p-4 border rounded-lg shadow-md hover:shadow-lg transition-all duration-300 border-gray-100 backdrop-blur-sm cursor-pointer
+                                           transform hover:-translate-y-1 hover:scale-[1.02] hover:shadow-xl active:scale-95"
+                                onClick={() => handleReunionClick(reunion)}
                             >
                                 <div className="space-y-3">
                                     <div className="flex items-start justify-between">

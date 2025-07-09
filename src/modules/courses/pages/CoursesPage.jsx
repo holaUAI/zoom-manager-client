@@ -564,9 +564,9 @@ export default function CoursesPage({ onNavigate }) {
     });
 
   return (
-    <div className="min-h-screen w-full bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-4 md:p-6">
+    <div className="min-h-screen w-full bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-100 p-4 md:p-6">
       {/* Header */}
-      <div className="bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 text-white rounded-xl shadow-lg mb-6">
+      <div className="bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 text-white rounded-xl shadow-lg mb-6 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-4 py-5">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center space-x-3">
@@ -604,7 +604,7 @@ export default function CoursesPage({ onNavigate }) {
             title: "Clases Totales", value: "128", icon: <Clock className="h-6 w-6 text-white" />,
             color: "from-purple-500 to-purple-600", trend: "Este semestre"
           }].map((card, i) => (
-            <div key={i} className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 p-4 border border-gray-100 transform hover:-translate-y-1">
+            <div key={i} className="bg-white/80 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 p-4 border border-gray-100 backdrop-blur-sm transform hover:-translate-y-1">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">{card.title}</p>
@@ -625,7 +625,7 @@ export default function CoursesPage({ onNavigate }) {
         </div>
 
         {/* Filters and Search */}
-        <div className="bg-white rounded-xl shadow-md p-4 md:p-6 border border-gray-100">
+        <div className="bg-white/80 rounded-xl shadow-md p-4 md:p-6 border border-gray-100 backdrop-blur-sm">
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
@@ -633,7 +633,7 @@ export default function CoursesPage({ onNavigate }) {
                 placeholder="Buscar cursos, especialidades..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white"
+                className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/80 focus:bg-white/90 backdrop-blur-sm"
               />
             </div>
             <div className="flex flex-wrap gap-3">
@@ -642,7 +642,7 @@ export default function CoursesPage({ onNavigate }) {
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
-                  className="pl-10 pr-8 py-3 w-full border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 focus:bg-white"
+                  className="pl-10 pr-8 py-3 w-full border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white/80 focus:bg-white/90 backdrop-blur-sm"
                 >
                   <option value="students">📊 Por Estudiantes</option>
                   <option value="name">📝 Por Nombre</option>
@@ -653,7 +653,7 @@ export default function CoursesPage({ onNavigate }) {
               <select
                 value={filterBy}
                 onChange={(e) => setFilterBy(e.target.value)}
-                className="w-full sm:w-auto px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 focus:bg-white min-w-[180px]"
+                className="w-full sm:w-auto px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white/80 focus:bg-white/90 backdrop-blur-sm min-w-[180px]"
               >
                 <option value="all">🎯 Todos los Cursos</option>
                 <option value="salud">🏥 Salud Pública</option>
@@ -676,7 +676,7 @@ export default function CoursesPage({ onNavigate }) {
               return (
                 <div
                   key={course.id}
-                  className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 border border-gray-100 hover:border-blue-200 group"
+                  className="bg-white/80 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 border border-gray-100 hover:border-blue-200 group backdrop-blur-sm"
                 >
                   <div className="p-4 space-y-3">
                     <div className="relative">
@@ -791,7 +791,7 @@ export default function CoursesPage({ onNavigate }) {
 
         {/* No Results Found */}
         {filteredCourses.length === 0 && (
-          <div className="text-center py-10 bg-white rounded-xl shadow-md border border-gray-100">
+          <div className="text-center py-10 bg-white/80 rounded-xl shadow-md border border-gray-100 backdrop-blur-sm">
             <div className="bg-gradient-to-r from-blue-500 to-purple-500 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
               <BookOpen className="h-8 w-8 text-white" />
             </div>
