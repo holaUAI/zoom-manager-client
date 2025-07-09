@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useMeetings } from "../../hooks/useMeetings";
-import { CalendarDays, Clock } from "lucide-react";
+import { CalendarDays, Clock, WifiOff, RotateCw } from "lucide-react";
 import { cn } from "../../../../lib/utils";
 import { ClassDetailsModal } from "./modalInfo";
 
@@ -90,7 +90,7 @@ function convertToModalFormat(meeting) {
 }
 
 export default function TodaysClasses() {
-    const { data, isLoading } = useMeetings();
+    const { data, isLoading, error } = useMeetings();
     const [tab, setTab] = useState("en_curso");
     const [selectedClass, setSelectedClass] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -109,14 +109,38 @@ export default function TodaysClasses() {
     if (isLoading) {
         return (
             <div className="bg-white rounded-xl shadow p-5 flex flex-col items-center justify-center h-64">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-4"></div>
-                <p className="text-lg text-gray-600">Cargando clases...</p>
+                <div className="relative">
+                    <RotateCw 
+                        size={48} 
+                        className="animate-spin text-blue-500" 
+                    />
+                    <div className="absolute inset-0 rounded-full border-4 border-blue-100 animate-ping opacity-75"></div>
+                </div>
+                <p className="text-lg text-gray-600 mt-4 animate-pulse">Cargando clases...</p>
             </div>
         );
     }
 
-    if (!Array.isArray(data)) {
-        return <p className="text-red-500">Error al cargar reuniones</p>;
+    if (error || !Array.isArray(data)) {
+        return (
+            <div className="bg-white rounded-xl shadow p-5 flex flex-col items-center justify-center h-64 animate-fade-in">
+                <div className="relative mb-4">
+                    <WifiOff size={48} className="text-red-500" />
+                    <div className="absolute -inset-2 bg-red-100 rounded-full opacity-50 animate-pulse"></div>
+                </div>
+                <h3 className="text-lg font-medium text-gray-800 mb-2">Buscando conexión</h3>
+                <p className="text-gray-600 text-center max-w-xs">
+                    Estamos teniendo problemas para conectarnos al servidor. Por favor verifica tu conexión a internet.
+                </p>
+                <button 
+                    onClick={() => window.location.reload()}
+                    className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors flex items-center gap-2"
+                >
+                    <RotateCw size={16} />
+                    Reintentar
+                </button>
+            </div>
+        );
     }
 
     const grupos = agruparPorEstado(data);
