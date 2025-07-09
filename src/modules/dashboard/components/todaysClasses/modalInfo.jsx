@@ -1,5 +1,5 @@
 import React from 'react';
-import { Video, Mail, Star, Copy, ExternalLink, Clock, Calendar, Play, AlertTriangle } from 'lucide-react';
+import { Video, Mail, Star, Copy, ExternalLink, Clock, Calendar, Play, AlertTriangle, BookOpen, User, MapPin, Layers, Flag } from 'lucide-react';
 
 export function ClassDetailsModal({ isOpen, onClose, selectedClass }) {
   if (!isOpen || !selectedClass) return null;
@@ -38,62 +38,64 @@ export function ClassDetailsModal({ isOpen, onClose, selectedClass }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-      <div className="bg-white rounded-lg shadow-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto p-6 relative">
+      <div className="bg-white rounded-lg shadow-lg max-w-2xl w-full max-h-[85vh] overflow-y-auto p-4 relative">
         {/* Header */}
-        <div className="flex items-center space-x-2 mb-4">
-          <Video className="h-5 w-5 text-gray-700" />
-          <h2 className="text-lg font-semibold">Detalles de la Clase</h2>
+        <div className="flex items-center space-x-2 mb-2">
+          <Video className="h-4 w-4 text-gray-700" />
+          <h2 className="text-md font-semibold">Detalles de la Clase</h2>
         </div>
 
-        <p className="text-sm text-gray-600 mb-6">Información completa de la sesión virtual</p>
+        <p className="text-xs text-gray-600 mb-4">Información completa de la sesión virtual</p>
 
         {/* Contenido */}
-        <div className="space-y-6">
-          {/* Detalles de Horario MEJORADO */}
-          <div className="border rounded-xl p-6 bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
-            <div className="flex items-center space-x-2 mb-6">
-              <Clock className="h-6 w-6 text-blue-600" />
-              <h3 className="font-semibold text-xl text-gray-800">Detalles de Horario</h3>
+        <div className="space-y-4">
+          {/* Detalles de Horario */}
+          <div className="border rounded-lg p-4 bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
+            <div className="flex items-center space-x-2 mb-4">
+              <Clock className="h-5 w-5 text-blue-600" />
+              <h3 className="font-semibold text-lg text-gray-800">Detalles de Horario</h3>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {/* Fecha y Hora Programada */}
               <div className="relative">
-                <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center space-x-2">
-                      <Calendar className="h-5 w-5 text-blue-600" />
-                      <span className="text-sm font-medium text-gray-600">Programada</span>
+                <div className="bg-white rounded-md p-3 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center space-x-1">
+                      <Calendar className="h-4 w-4 text-blue-600" />
+                      <span className="text-xs font-medium text-gray-600">Programada</span>
                     </div>
-                    <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                    <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                   </div>
-                  <p className="text-lg font-semibold text-gray-800">{selectedClass.scheduledTime || '-'}</p>
-                  <p className="text-xs text-gray-500 mt-1">Hora oficial de inicio</p>
+                  <p className="text-sm font-semibold text-gray-800">
+                    {selectedClass.date || '-'} {selectedClass.scheduledTime || ''}
+                  </p>
+                  <p className="text-2xs text-gray-500 mt-1">Horario programado</p>
                 </div>
               </div>
 
               {/* Hora de Apertura */}
               {(selectedClass.status === "Finalizado" || selectedClass.status === "En curso") && (
                 <div className="relative">
-                  <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="flex items-center space-x-2">
-                        <Clock className="h-5 w-5 text-green-600" />
-                        <span className="text-sm font-medium text-gray-600">Apertura</span>
+                  <div className="bg-white rounded-md p-3 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center space-x-1">
+                        <Clock className="h-4 w-4 text-green-600" />
+                        <span className="text-xs font-medium text-gray-600">Apertura de sesión</span>
                       </div>
-                      <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                     </div>
-                    <p className="text-lg font-semibold text-gray-800">{selectedClass.openedTime || '-'}</p>
+                    <p className="text-sm font-semibold text-gray-800">{selectedClass.openedTime || '-'}</p>
                     {delayOpened && (
-                      <div className="mt-2 flex items-center space-x-1">
+                      <div className="mt-1 flex items-center space-x-1">
                         {delayOpened.includes('tarde') ? (
-                          <AlertTriangle className="h-4 w-4 text-orange-500" />
+                          <AlertTriangle className="h-3 w-3 text-orange-500" />
                         ) : (
-                          <span className="w-4 h-4 bg-green-500 rounded-full flex items-center justify-center">
-                            <span className="text-white text-xs">✓</span>
+                          <span className="w-3 h-3 bg-green-500 rounded-full flex items-center justify-center">
+                            <span className="text-white text-2xs">✓</span>
                           </span>
                         )}
-                        <span className={`text-xs font-medium ${
+                        <span className={`text-3xs font-medium ${
                           delayOpened.includes('tarde') ? 'text-orange-600' : 'text-green-600'
                         }`}>
                           {delayOpened.includes('tarde') ? `Entró ${delayOpened}` : 'Entró a tiempo'}
@@ -107,25 +109,25 @@ export function ClassDetailsModal({ isOpen, onClose, selectedClass }) {
               {/* Hora de Inicio */}
               {(selectedClass.status === "Finalizado" || selectedClass.status === "En curso") && (
                 <div className="relative">
-                  <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="flex items-center space-x-2">
-                        <Play className="h-5 w-5 text-purple-600" />
-                        <span className="text-sm font-medium text-gray-600">Inicio</span>
+                  <div className="bg-white rounded-md p-3 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center space-x-1">
+                        <Play className="h-4 w-4 text-purple-600" />
+                        <span className="text-xs font-medium text-gray-600">Inicio de la sesión</span>
                       </div>
-                      <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
+                      <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
                     </div>
-                    <p className="text-lg font-semibold text-gray-800">{selectedClass.startedTime || '-'}</p>
+                    <p className="text-sm font-semibold text-gray-800">{selectedClass.startedTime || '-'}</p>
                     {delayStarted && (
-                      <div className="mt-2 flex items-center space-x-1">
+                      <div className="mt-1 flex items-center space-x-1">
                         {delayStarted.includes('tarde') ? (
-                          <AlertTriangle className="h-4 w-4 text-orange-500" />
+                          <AlertTriangle className="h-3 w-3 text-orange-500" />
                         ) : (
-                          <span className="w-4 h-4 bg-green-500 rounded-full flex items-center justify-center">
-                            <span className="text-white text-xs">✓</span>
+                          <span className="w-3 h-3 bg-green-500 rounded-full flex items-center justify-center">
+                            <span className="text-white text-2xs">✓</span>
                           </span>
                         )}
-                        <span className={`text-xs font-medium ${
+                        <span className={`text-3xs font-medium ${
                           delayStarted.includes('tarde') ? 'text-orange-600' : 'text-green-600'
                         }`}>
                           {delayStarted.includes('tarde') ? `Inició ${delayStarted}` : 'Inició a tiempo'}
@@ -136,103 +138,117 @@ export function ClassDetailsModal({ isOpen, onClose, selectedClass }) {
                 </div>
               )}
             </div>
-
-            {/* Línea de tiempo visual para clases finalizadas o en curso */}
-            {(selectedClass.status === "Finalizado" || selectedClass.status === "En curso") && (
-              <div className="mt-6 pt-4 border-t border-blue-200">
-                <div className="flex items-center justify-between relative">
-                  <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-gray-300 -translate-y-1/2"></div>
-                  <div className="absolute top-1/2 left-0 w-1/3 h-0.5 bg-blue-500 -translate-y-1/2"></div>
-                  <div className="absolute top-1/2 left-1/3 w-1/3 h-0.5 bg-green-500 -translate-y-1/2"></div>
-                  <div className="absolute top-1/2 left-2/3 w-1/3 h-0.5 bg-purple-500 -translate-y-1/2"></div>
-                  
-                  <div className="bg-blue-500 w-4 h-4 rounded-full border-2 border-white shadow-md z-10"></div>
-                  <div className="bg-green-500 w-4 h-4 rounded-full border-2 border-white shadow-md z-10"></div>
-                  <div className="bg-purple-500 w-4 h-4 rounded-full border-2 border-white shadow-md z-10"></div>
-                </div>
-                <div className="flex items-center justify-between mt-2">
-                  <span className="text-xs text-gray-500">Programada</span>
-                  <span className="text-xs text-gray-500">Apertura</span>
-                  <span className="text-xs text-gray-500">Inicio</span>
-                </div>
-              </div>
-            )}
           </div>
 
+          {/* Resto del código permanece igual... */}
           {/* Información General y Detalles de Clase */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Información General */}
-            <div className="border rounded-lg p-4 bg-gray-50">
-              <h3 className="font-medium text-lg mb-3">Información General</h3>
+            <div className="border rounded-lg p-4 bg-gradient-to-r from-green-50 to-emerald-50 border-green-200">
+              <div className="flex items-center space-x-2 mb-4">
+                <BookOpen className="h-5 w-5 text-green-600" />
+                <h3 className="font-semibold text-lg text-gray-800">Información General</h3>
+              </div>
+
               <div className="space-y-3">
-                <div>
-                  <label className="text-sm font-medium text-gray-600">Especialidad</label>
-                  <p className="text-sm">{selectedClass.specialty || '-'}</p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-600">Sede</label>
-                  <p className="text-sm">{selectedClass.sede || '-'}</p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-600">Profesor</label>
-                  <p className="text-sm font-semibold">{selectedClass.professor || '-'}</p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-600">Email del docente</label>
-                  <div className="flex items-center space-x-2 mt-1">
-                    <Mail className="h-4 w-4 text-gray-500" />
-                    <p className="text-sm">{selectedClass.hostEmail || '-'}</p>
+                <div className="bg-white rounded-md p-3 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+                  <div className="flex items-center space-x-2 mb-1">
+                    <Layers className="h-4 w-4 text-green-600" />
+                    <span className="text-xs font-medium text-gray-600">Especialidad</span>
                   </div>
+                  <p className="text-sm font-semibold text-gray-800">{selectedClass.specialty || '-'}</p>
+                </div>
+
+                <div className="bg-white rounded-md p-3 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+                  <div className="flex items-center space-x-2 mb-1">
+                    <MapPin className="h-4 w-4 text-green-600" />
+                    <span className="text-xs font-medium text-gray-600">Sede</span>
+                  </div>
+                  <p className="text-sm font-semibold text-gray-800">{selectedClass.sede || '-'}</p>
+                </div>
+
+                <div className="bg-white rounded-md p-3 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+                  <div className="flex items-center space-x-2 mb-1">
+                    <User className="h-4 w-4 text-green-600" />
+                    <span className="text-xs font-medium text-gray-600">Profesor</span>
+                  </div>
+                  <p className="text-sm font-semibold text-gray-800">{selectedClass.professor || '-'}</p>
+                </div>
+
+                <div className="bg-white rounded-md p-3 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+                  <div className="flex items-center space-x-2 mb-1">
+                    <Mail className="h-4 w-4 text-green-600" />
+                    <span className="text-xs font-medium text-gray-600">Email del docente</span>
+                  </div>
+                  <p className="text-sm font-semibold text-gray-800">{selectedClass.hostEmail || '-'}</p>
                 </div>
               </div>
             </div>
 
             {/* Detalles de la Clase */}
-            <div className="border rounded-lg p-4 bg-gray-50">
-              <h3 className="font-medium text-lg mb-3">Detalles de la Clase</h3>
+            <div className="border rounded-lg p-4 bg-gradient-to-r from-purple-50 to-violet-50 border-purple-200">
+              <div className="flex items-center space-x-2 mb-4">
+                <Flag className="h-5 w-5 text-purple-600" />
+                <h3 className="font-semibold text-lg text-gray-800">Detalles de la Clase</h3>
+              </div>
+
               <div className="space-y-3">
-                <div>
-                  <label className="text-sm font-medium text-gray-600">Número de clase</label>
-                  <p className="text-sm">5 de 20 clases</p>
+                <div className="bg-white rounded-md p-3 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+                  <div className="flex items-center space-x-2 mb-1">
+                    <Layers className="h-4 w-4 text-purple-600" />
+                    <span className="text-xs font-medium text-gray-600">Número de clase</span>
+                  </div>
+                  <p className="text-sm font-semibold text-gray-800">5 de 20 clases</p>
                 </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-600">Puntaje anterior</label>
-                  <p className="text-sm flex items-center">
-                    4.5 <Star className="h-4 w-4 text-yellow-500 ml-1" />
+
+                <div className="bg-white rounded-md p-3 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+                  <div className="flex items-center space-x-2 mb-1">
+                    <Star className="h-4 w-4 text-purple-600" />
+                    <span className="text-xs font-medium text-gray-600">Puntaje anterior</span>
+                  </div>
+                  <p className="text-sm font-semibold text-gray-800 flex items-center">
+                    4.5 <Star className="h-3 w-3 text-yellow-500 ml-1 fill-yellow-500" />
                   </p>
                 </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-600">Estado de la clase</label>
-                  <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium mt-1 ${
+
+                <div className="bg-white rounded-md p-3 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+                  <div className="flex items-center space-x-2 mb-1">
+                    <Clock className="h-4 w-4 text-purple-600" />
+                    <span className="text-xs font-medium text-gray-600">Estado de la clase</span>
+                  </div>
+                  <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-2xs font-medium ${
                       selectedClass.status === "Finalizado"
-                        ? "bg-gray-200 text-gray-800"
+                        ? "bg-gray-100 text-gray-800"
                         : selectedClass.status === "En curso"
-                        ? "bg-green-200 text-green-800"
-                        : "bg-orange-200 text-orange-800"
+                        ? "bg-green-100 text-green-800"
+                        : "bg-orange-100 text-orange-800"
                     }`}>
                     {selectedClass.status}
                   </span>
                 </div>
 
-                <div>
-                  <label className="text-sm font-medium text-gray-600">Link del Zoom</label>
-                  <div className="flex items-center space-x-2 mt-1">
+                <div className="bg-white rounded-md p-3 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+                  <div className="flex items-center space-x-2 mb-1">
+                    <Video className="h-4 w-4 text-purple-600" />
+                    <span className="text-xs font-medium text-gray-600">Link del Zoom</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
                     <input
                       type="text"
                       value={selectedClass.joinUrl || ''}
                       readOnly
-                      className="flex-1 text-xs bg-gray-50 border rounded p-2 font-mono"
+                      className="flex-1 text-xs bg-gray-50 border rounded p-1.5 font-mono"
                     />
                     <button
                       onClick={() => copyToClipboard(selectedClass.joinUrl)}
-                      className="text-gray-600 hover:text-gray-900"
+                      className="text-gray-600 hover:text-gray-900 p-1.5 rounded-full hover:bg-gray-100"
                       title="Copiar link"
                     >
-                      <Copy className="h-4 w-4" />
+                      <Copy className="h-3 w-3" />
                     </button>
                     <button
                       onClick={() => window.open(selectedClass.joinUrl, '_blank')}
-                      className="bg-blue-600 text-white text-xs px-2 py-1 rounded flex items-center"
+                      className="bg-purple-600 text-white text-xs px-2 py-1.5 rounded flex items-center hover:bg-purple-700 transition-colors"
                     >
                       <ExternalLink className="h-3 w-3 mr-1" />
                       Unirse
@@ -245,9 +261,14 @@ export function ClassDetailsModal({ isOpen, onClose, selectedClass }) {
 
           {/* Resumen de la clase - Solo para clases finalizadas */}
           {selectedClass.status === "Finalizado" && (
-            <div className="col-span-full border rounded-lg p-4 bg-gray-50">
-              <h3 className="font-medium text-lg mb-3">Resumen de la clase</h3>
-              <p className="text-sm text-gray-600">Próximamente encontrarás el resumen de esta clase.</p>
+            <div className="border rounded-lg p-4 bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200">
+              <div className="flex items-center space-x-2 mb-4">
+                <BookOpen className="h-5 w-5 text-amber-600" />
+                <h3 className="font-semibold text-lg text-gray-800">Resumen de la clase</h3>
+              </div>
+              <div className="bg-white rounded-md p-3 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+                <p className="text-xs text-gray-600">Próximamente encontrarás el resumen de esta clase.</p>
+              </div>
             </div>
           )}
         </div>
@@ -255,7 +276,7 @@ export function ClassDetailsModal({ isOpen, onClose, selectedClass }) {
         {/* Botón de cerrar */}
         <button
           onClick={onClose}
-          className="absolute top-3 right-3 text-gray-500 hover:text-gray-800 text-xl"
+          className="absolute top-2 right-2 text-gray-500 hover:text-gray-800 text-lg"
           aria-label="Cerrar modal"
         >
           <span className="sr-only">Cerrar</span>
@@ -265,4 +286,3 @@ export function ClassDetailsModal({ isOpen, onClose, selectedClass }) {
     </div>
   );
 }
-
