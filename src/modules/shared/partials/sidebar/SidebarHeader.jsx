@@ -5,7 +5,7 @@ export default function SidebarHeader({ open }) {
     const { user } = useAtomValue(authAtom);
   
     const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(
-      user?.email || "Usuario"
+      user?.email
     )}&background=0358CB&color=FFFFFF`;
   
     return (
@@ -20,7 +20,7 @@ export default function SidebarHeader({ open }) {
         </div>
         {open && (
           <div className="flex flex-col">
-            <span className="font-semibold">username</span>
+            <span className="font-semibold">{user?.username}</span>
             <span className="text-xs text-gray-500">{user?.email}</span>
           </div>
         )}
