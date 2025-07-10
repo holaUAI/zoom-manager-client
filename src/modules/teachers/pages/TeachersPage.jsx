@@ -1,52 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
+import { Search, Star, Clock, Users, BookOpen, Phone, Mail, MapPin, TrendingUp, User, GraduationCap, Filter } from 'lucide-react';
 
-// Componentes UI simulados
-const Card = ({ children, className = "" }) => (
-  <div className={`bg-white rounded-lg shadow ${className}`}>
-    {children}
-  </div>
-);
-
-const CardContent = ({ children, className = "" }) => (
-  <div className={className}>
-    {children}
-  </div>
-);
-
-const Button = ({ children, variant = "default", size = "md", onClick, className = "" }) => (
-  <button 
-    onClick={onClick}
-    className={`px-4 py-2 rounded-md font-medium transition-colors ${
-      variant === "outline" 
-        ? "border border-gray-300 bg-white text-gray-700 hover:bg-gray-50" 
-        : "bg-blue-600 text-white hover:bg-blue-700"
-    } ${className}`}
-  >
-    {children}
-  </button>
-);
-
-const Input = ({ placeholder, value, onChange, className = "" }) => (
-  <input
-    type="text"
-    placeholder={placeholder}
-    value={value}
-    onChange={onChange}
-    className={`w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${className}`}
-  />
-);
-
-const Badge = ({ children, variant = "default", className = "" }) => (
-  <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-    variant === "outline" 
-      ? "border border-gray-200 text-gray-700 bg-gray-50" 
-      : "bg-blue-100 text-blue-800"
-  } ${className}`}>
-    {children}
-  </span>
-);
-
-export default function TeacherPage({ onNavigate }) {
+export default function TeacherPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState("rating");
   const [filterBy, setFilterBy] = useState("all");
@@ -70,13 +25,13 @@ export default function TeacherPage({ onNavigate }) {
     },
     {
       id: 2,
-      name: "GARCÍA LÓPEZ MARÍA ISABEL",
+      name: "GARCÍA MENDOZA MARÍA ELENA",
       email: "maria.garcia@uai.edu.pe",
-      phone: "+51 (01) 987-6543",
+      phone: "+51 (01) 123-4568",
       rating: 4.7,
       ratingVotes: 45,
       totalStudents: 45,
-      courses: ["Administración Estratégica", "Gestión de Proyectos", "Liderazgo Organizacional"],
+      courses: ["Administración Estratégica", "Gestión de Recursos Humanos", "Liderazgo Organizacional"],
       specialty: "Doctorado en Administración",
       sede: "PRINCIPAL",
       status: "Activo",
@@ -86,294 +41,460 @@ export default function TeacherPage({ onNavigate }) {
     },
     {
       id: 3,
-      name: "MARTÍNEZ RUIZ CARLOS ALBERTO",
-      email: "carlos.martinez@uai.edu.pe",
-      phone: "+51 (01) 456-7890",
+      name: "RODRIGUEZ SILVA CARLOS ANTONIO",
+      email: "carlos.rodriguez@uai.edu.pe",
+      phone: "+51 (01) 123-4569",
       rating: 4.5,
-      ratingVotes: 35,
-      totalStudents: 35,
-      courses: ["Economía de la Salud", "Políticas Públicas en Salud", "Bioestadística Aplicada"],
+      ratingVotes: 38,
+      totalStudents: 38,
+      courses: ["Epidemiología", "Bioestadística", "Investigación en Salud"],
       specialty: "Doctorado en Salud Pública",
       sede: "FILIAL",
       status: "Activo",
-      punctuality: 90,
+      punctuality: 92,
+      punctualityTrend: "Muy Bueno",
+      avatar: "/placeholder.svg?height=80&width=80",
+    },
+    {
+      id: 4,
+      name: "PAREJA PERA TERESA LUISA",
+      email: "teresa.pareja@uai.edu.pe",
+      phone: "+51 (01) 456-7890",
+      rating: 4.6,
+      ratingVotes: 27,
+      totalStudents: 27,
+      courses: ["Realidad Nacional en Salud Publica","Seminario de Tesis II"],
+      specialty: "Doctorado en Salud Pública",
+      sede: "PRINCIPAL",
+      status: "Activo",
+      punctuality: 88,
       punctualityTrend: "Bueno",
       avatar: "/placeholder.svg?height=80&width=80",
+    },
+    {
+      id: 5,
+      name: "CÁRDENAS DE FERNÁNDEZ MARÍA HILDA",
+      email: "maria.cardenas@uai.edu.pe",
+      phone: "+51 (01) 567-8901",
+      rating: 4.5,
+      ratingVotes: 22,
+      totalStudents: 22,
+      courses: ["Proyecto de Tesis"],
+      specialty: "Doctorado en Salud Pública",
+      sede: "PRINCIPAL",
+      status: "Activo",
+      punctuality: 90,
+      punctualityTrend: "Muy Bueno",
+      avatar: "/placeholder.svg?height=80&width=80",
+    },
+    // DOCTORADO EN ADMINISTRACIÓN - SEDE FILIAL
+    {
+      id: 6,
+      name: "GUANILO PAREDES CARLOS ENRIQUE",
+      email: "carlos.guanilo@uai.edu.pe",
+      phone: "+51 (01) 678-9012",
+      rating: 4.7,
+      ratingVotes: 24,
+      totalStudents: 24,
+      courses: ["Filosofía de la Investigación Científica"],
+      specialty: "Doctorado en Administración",
+      sede: "FILIAL",
+      status: "Activo",
+      punctuality: 96,
+      punctualityTrend: "Excelente",
+      avatar: "/placeholder.svg?height=80&width=80",
+    },
+    {
+      id: 7,
+      name: "ARBULÚ BALLESTEROS MARCO AGUSTÍN",
+      email: "marco.arbulu@uai.edu.pe",
+      phone: "+51 (01) 789-0123",
+      rating: 4.5,
+      ratingVotes: 71,
+      totalStudents: 71,
+      courses: ["Estadística", "Normas APA", "Redacción de un Artículo de Investigación"],
+      specialty: "Doctorado en Administración",
+      sede: "FILIAL",
+      status: "Activo",
+      punctuality: 91,
+      punctualityTrend: "Muy Bueno",
+      avatar: "/placeholder.svg?height=80&width=80",
+    },
+    {
+      id: 8,
+      name: "CALDERON PANIAGUA DENNYS GEOVANNI",
+      email: "dennys.calderon@uai.edu.pe",
+      phone: "+51 (01) 890-1234",
+      rating: 4.4,
+      ratingVotes: 29,
+      totalStudents: 29,
+      courses: ["Métodos Cuantitativos para la Investigación"],
+      specialty: "Doctorado en Administración",
+      sede: "FILIAL",
+      status: "Activo",
+      punctuality: 89,
+      punctualityTrend: "Bueno",
+      avatar: "/placeholder.svg?height=80&width=80",
+    },
+    {
+      id: 9,
+      name: "URIBE HERNANDEZ YRENE CECILIA",
+      email: "yrene.uribe@uai.edu.pe",
+      phone: "+51 (01) 901-2345",
+      rating: 4.6,
+      ratingVotes: 28,
+      totalStudents: 28,
+      courses: ["Seminario de Administración: Gestión Financiera"],
+      specialty: "Doctorado en Administración",
+      sede: "FILIAL",
+      status: "Activo",
+      punctuality: 93,
+      punctualityTrend: "Muy Bueno",
+      avatar: "/placeholder.svg?height=80&width=80",
+    },
+    {
+      id: 10,
+      name: "FERNÁNDEZ BEDOYA VÍCTOR HUGO",
+      email: "victor.fernandez@uai.edu.pe",
+      phone: "+51 (01) 012-3456",
+      rating: 4.5,
+      ratingVotes: 45,
+      totalStudents: 45,
+      courses: ["Seminario de Tesis I", "Seminario de Tesis III"],
+      specialty: "Doctorado en Administración",
+      sede: "FILIAL",
+      status: "Activo",
+      punctuality: 94,
+      punctualityTrend: "Muy Bueno",
+      avatar: "/placeholder.svg?height=80&width=80",
+    },
+    {
+      "id": 11,
+      "name": "PÉREZ DELGADO ORLANDO",
+      "email": "orlando.perez@uai.edu.pe",
+      "phone": "+51 (01) 456-7890",
+      "rating": 4.7,
+      "ratingVotes": 38,
+      "totalStudents": 40,
+      "courses": ["Normas Vancouver", "Redacción de un Artículo de Investigación"],
+      "specialty": "Doctorado en Salud Pública",
+      "sede": "FILIAL",
+      "status": "Activo",
+      "punctuality": 96,
+      "punctualityTrend": "Muy Bueno",
+      "avatar": "/placeholder.svg?height=80&width=80",
+    },
+    {
+      "id": 12,
+      "name": "OBANDO ZEGARRA ROXANA",
+      "email": "roxana.obando@uai.edu.pe",
+      "phone": "+51 (01) 321-6540",
+      "rating": 4.6,
+      "ratingVotes": 42,
+      "totalStudents": 45,
+      "courses": ["Determinantes Sociales"],
+      "specialty": "Doctorado en Salud Pública",
+      "sede": "FILIAL",
+      "status": "Activo",
+      "punctuality": 95,
+      "punctualityTrend": "Muy Bueno",
+      "avatar": "/placeholder.svg?height=80&width=80",
+    },
+    {
+      "id": 13,
+      "name": "CAYCHO VALENCIA FÉLIX ALBERTO",
+      "email": "felix.caycho@uai.edu.pe",
+      "phone": "+51 (01) 876-5432",
+      "rating": 4.8,
+      "ratingVotes": 44,
+      "totalStudents": 44,
+      "courses": ["Seminario de Tesis I", "Seminario de Tesis III"],
+      "specialty": "Doctorado en Salud Pública",
+      "sede": "FILIAL",
+      "status": "Activo",
+      "punctuality": 97,
+      "punctualityTrend": "Muy Bueno",
+      "avatar": "/placeholder.svg?height=80&width=80",
+    },
+    {
+      "id": 14,
+      "name": "MANRIQUE CARBAJAL OSKAR PAVEL",
+      "email": "oskar.manrique@uai.edu.pe",
+      "phone": "+51 (01) 234-5678",
+      "rating": 4.5,
+      "ratingVotes": 40,
+      "totalStudents": 40,
+      "courses": ["Gestión Económica en Salud"],
+      "specialty": "Doctorado en Salud Pública",
+      "sede": "FILIAL",
+      "status": "Activo",
+      "punctuality": 94,
+      "punctualityTrend": "Muy Bueno",
+      "avatar": "/placeholder.svg?height=80&width=80",
+    },
+    {
+      "id": 15,
+      "name": "MARCOS ROMERO JUANA MARÍA",
+      "email": "juana.marcos@uai.edu.pe",
+      "phone": "+51 (01) 987-6543",
+      "rating": 4.6,
+      "ratingVotes": 43,
+      "totalStudents": 45,
+      "courses": ["Salud Ambiental y Desarrollo Sostenible"],
+      "specialty": "Doctorado en Salud Pública",
+      "sede": "FILIAL",
+      "status": "Activo",
+      "punctuality": 95,
+      "punctualityTrend": "Muy Bueno",
+      "avatar": "/placeholder.svg?height=80&width=80",
     }
   ];
 
-  const filteredProfessors = professorsData
-    .filter((professor) => {
-      const matchesSearch =
-        professor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        professor.courses.some((course) =>
-          course.toLowerCase().includes(searchTerm.toLowerCase())
-        ) ||
-        professor.specialty.toLowerCase().includes(searchTerm.toLowerCase());
+  const filteredProfessors = useMemo(() => {
+    return professorsData
+      .filter((professor) => {
+        const matchesSearch =
+          professor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          professor.courses.some((course) =>
+            course.toLowerCase().includes(searchTerm.toLowerCase())
+          ) ||
+          professor.specialty.toLowerCase().includes(searchTerm.toLowerCase());
 
-      const matchesFilter =
-        filterBy === "all" ||
-        (filterBy === "salud" && professor.specialty.includes("Salud Pública")) ||
-        (filterBy === "administracion" && professor.specialty.includes("Administración")) ||
-        (filterBy === "principal" && professor.sede === "PRINCIPAL") ||
-        (filterBy === "filial" && professor.sede === "FILIAL");
+        const matchesFilter =
+          filterBy === "all" ||
+          (filterBy === "salud" && professor.specialty.includes("Salud Pública")) ||
+          (filterBy === "administracion" && professor.specialty.includes("Administración")) ||
+          (filterBy === "principal" && professor.sede === "PRINCIPAL") ||
+          (filterBy === "filial" && professor.sede === "FILIAL");
 
-      return matchesSearch && matchesFilter;
-    })
-    .sort((a, b) => {
-      switch (sortBy) {
-        case "rating":
-          return b.rating - a.rating;
-        case "name":
-          return a.name.localeCompare(b.name);
-        case "students":
-          return b.totalStudents - a.totalStudents;
-        case "punctuality":
-          return b.punctuality - a.punctuality;
-        default:
-          return 0;
-      }
-    });
+        return matchesSearch && matchesFilter;
+      })
+      .sort((a, b) => {
+        switch (sortBy) {
+          case "rating":
+            return b.rating - a.rating;
+          case "name":
+            return a.name.localeCompare(b.name);
+          case "students":
+            return b.totalStudents - a.totalStudents;
+          case "punctuality":
+            return b.punctuality - a.punctuality;
+          default:
+            return 0;
+        }
+      });
+  }, [searchTerm, sortBy, filterBy]);
 
-  const handleNavigate = (page) => {
-    if (onNavigate) {
-      onNavigate(page);
-    }
-  };
+  // Métricas calculadas
+  const totalProfessors = professorsData.length;
+  const averageRating = (professorsData.reduce((sum, p) => sum + p.rating, 0) / totalProfessors).toFixed(1);
+  const averagePunctuality = Math.round(professorsData.reduce((sum, p) => sum + p.punctuality, 0) / totalProfessors);
 
   return (
-    <div className="p-4 sm:p-6 bg-gradient-to-br from-blue-50 to-purple-50 min-h-screen">
-      <div className="max-w-7xl mx-auto space-y-6">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-100">
+      <div className="container mx-auto px-4 py-6 space-y-6">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="flex items-center space-x-4">
-            <div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Gestión de Profesores</h1>
-              <p className="text-sm sm:text-base text-gray-600">Administra y revisa la información del cuerpo docente</p>
+        <div className="text-center space-y-2">
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+            Gestión de Profesores
+          </h1>
+        </div>
+
+        {/* Estadísticas mejoradas */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="bg-white p-4 shadow-lg rounded-xl border border-purple-100 hover:shadow-xl transition-all duration-300">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs font-medium text-gray-500 mb-1">Total Profesores</p>
+                <p className="text-2xl font-bold text-purple-600">{totalProfessors}</p>
+              </div>
+              <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-purple-600 rounded-full flex items-center justify-center">
+                <GraduationCap className="w-5 h-5 text-white" />
+              </div>
+            </div>
+          </div>
+          
+          <div className="bg-white p-4 shadow-lg rounded-xl border border-yellow-100 hover:shadow-xl transition-all duration-300">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs font-medium text-gray-500 mb-1">Rating Promedio</p>
+                <p className="text-2xl font-bold text-yellow-600">{averageRating}</p>
+              </div>
+              <div className="w-10 h-10 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-full flex items-center justify-center">
+                <Star className="w-5 h-5 text-white" />
+              </div>
+            </div>
+          </div>
+          
+          <div className="bg-white p-4 shadow-lg rounded-xl border border-green-100 hover:shadow-xl transition-all duration-300">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs font-medium text-gray-500 mb-1">Puntualidad Promedio</p>
+                <p className="text-2xl font-bold text-green-600">{averagePunctuality}%</p>
+              </div>
+              <div className="w-10 h-10 bg-gradient-to-r from-green-500 to-green-600 rounded-full flex items-center justify-center">
+                <Clock className="w-5 h-5 text-white" />
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-          <Card className="border-t-4 border-blue-500">
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-gray-600">Total Profesores</p>
-                  <p className="text-2xl font-bold">{professorsData.length}</p>
-                </div>
-                <div className="bg-blue-100 p-2 rounded-full">
-                  <svg className="h-6 w-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                  </svg>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="border-t-4 border-yellow-500">
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-gray-600">Rating Promedio</p>
-                  <p className="text-2xl font-bold">4.6</p>
-                </div>
-                <div className="bg-yellow-100 p-2 rounded-full">
-                  <svg className="h-6 w-6 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>
-                  </svg>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="border-t-4 border-green-500">
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-gray-600">Puntualidad Promedio</p>
-                  <p className="text-2xl font-bold">92%</p>
-                </div>
-                <div className="bg-green-100 p-2 rounded-full">
-                  <svg className="h-6 w-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                  </svg>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="border-t-4 border-purple-500">
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-gray-600">Cursos Activos</p>
-                  <p className="text-2xl font-bold">12</p>
-                </div>
-                <div className="bg-purple-100 p-2 rounded-full">
-                  <svg className="h-6 w-6 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"></path>
-                  </svg>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+        {/* Barra de búsqueda y filtros mejorada */}
+        <div className="max-w-6xl mx-auto space-y-3">
+          <div className="relative">
+            <Search className="absolute top-3 left-3 text-gray-400" size={18} />
+            <input
+              type="text"
+              placeholder="Buscar por nombre, especialidad o curso..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-10 pr-4 py-2 rounded-xl border-2 border-gray-200 shadow-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 text-sm"
+            />
+          </div>
+          
+          <div className="flex flex-wrap gap-2 justify-center">
+            <div className="relative">
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="px-4 py-2 border-2 border-gray-200 rounded-lg text-xs bg-white shadow-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 appearance-none cursor-pointer"
+              >
+                <option value="rating">Ordenar por Rating</option>
+                <option value="name">Ordenar por Nombre</option>
+                <option value="students">Ordenar por Estudiantes</option>
+                <option value="punctuality">Ordenar por Puntualidad</option>
+              </select>
+              <TrendingUp className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400" size={14} />
+            </div>
+            
+            <div className="relative">
+              <select
+                value={filterBy}
+                onChange={(e) => setFilterBy(e.target.value)}
+                className="px-4 py-2 border-2 border-gray-200 rounded-lg text-xs bg-white shadow-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 appearance-none cursor-pointer"
+              >
+                <option value="all">Todos los Filtros</option>
+                <option value="salud">Doctorado en Salud Pública</option>
+                <option value="administracion">Doctorado en Administración</option>
+                <option value="principal">Sede Principal</option>
+                <option value="filial">Sede Filial</option>
+              </select>
+              <Filter className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400" size={14} />
+            </div>
+          </div>
         </div>
 
-        {/* Filters and Search */}
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex flex-col md:flex-row gap-4">
-              <div className="flex-1">
-                <div className="relative">
-                  <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
-                    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                    </svg>
+        {/* Lista de Profesores mejorada con scroll */}
+        <div className="h-[calc(100vh-380px)] overflow-y-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pb-4">
+            {filteredProfessors.map((professor) => (
+              <div
+                key={professor.id}
+                className="bg-white p-4 border rounded-xl shadow-md hover:shadow-lg transition-all duration-300 border-gray-100"
+              >
+                <div className="space-y-3">
+                  {/* Cabecera del profesor */}
+                  <div className="flex items-start gap-3">
+                    <div className="w-14 h-14 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
+                      <User className="w-6 h-6 text-white" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-bold text-base text-gray-800 mb-1 line-clamp-2">{professor.name}</h3>
+                      <p className="text-xs text-blue-600 font-medium mb-1">{professor.specialty}</p>
+                      <div className="flex items-center gap-2">
+                        <MapPin size={10} className="text-gray-400" />
+                        <span className="text-xs text-gray-500">Sede: {professor.sede}</span>
+                      </div>
+                    </div>
                   </div>
-                  <Input
-                    placeholder="Buscar por nombre, especialidad o curso..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10"
-                  />
-                </div>
-              </div>
-              <div className="flex flex-col sm:flex-row gap-2">
-                <div className="relative">
-                  <select
-                    value={sortBy}
-                    onChange={(e) => setSortBy(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm bg-white appearance-none"
-                  >
-                    <option value="rating">Ordenar por Rating</option>
-                    <option value="name">Ordenar por Nombre</option>
-                    <option value="students">Ordenar por Estudiantes</option>
-                    <option value="punctuality">Ordenar por Puntualidad</option>
-                  </select>
-                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                    <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                      <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                    </svg>
-                  </div>
-                </div>
-                <div className="relative">
-                  <select
-                    value={filterBy}
-                    onChange={(e) => setFilterBy(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm bg-white appearance-none"
-                  >
-                    <option value="all">Todos los Filtros</option>
-                    <option value="salud">Doctorado en Salud Pública</option>
-                    <option value="administracion">Doctorado en Administración</option>
-                    <option value="principal">Sede Principal</option>
-                    <option value="filial">Sede Filial</option>
-                  </select>
-                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                    <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                      <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                    </svg>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
 
-        {/* Professors Grid - Scrollable Container */}
-        <div className="max-h-[calc(100vh-300px)] overflow-y-auto pr-2">
-          {filteredProfessors.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredProfessors.map((professor) => (
-                <Card key={professor.id} className="hover:shadow-lg transition-shadow border border-gray-100">
-                  <CardContent className="p-5">
-                    {/* Cabecera alineada a la izquierda */}
-                    <div className="mb-4">
-                      <h3 className="text-lg font-semibold text-gray-900">{professor.name}</h3>
-                      <p className="text-sm text-blue-600 font-medium">{professor.specialty}</p>
-                      <p className="text-xs text-gray-500">Sede: {professor.sede}</p>
+                  {/* Información de contacto */}
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2 text-gray-600">
+                      <div className="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center">
+                        <Mail size={12} />
+                      </div>
+                      <span className="text-xs font-medium truncate">{professor.email}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-gray-600">
+                      <div className="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center">
+                        <Phone size={12} />
+                      </div>
+                      <span className="text-xs font-medium">{professor.phone}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-gray-600">
+                      <div className="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center">
+                        <Users size={12} />
+                      </div>
+                      <span className="text-xs font-medium">{professor.totalStudents} estudiantes</span>
+                    </div>
+                  </div>
+
+                  {/* Cursos */}
+                  <div className="bg-gray-50 rounded-lg p-3">
+                    <p className="text-xs font-medium text-gray-700 mb-1 flex items-center gap-1">
+                      <BookOpen size={12} />
+                      Cursos:
+                    </p>
+                    <ul className="space-y-1 text-xs text-gray-600">
+                      {professor.courses.slice(0, 3).map((course, index) => (
+                        <li key={index} className="flex items-start">
+                          <span className="mr-1 text-purple-500">•</span>
+                          <span className="line-clamp-1" title={course}>{course}</span>
+                        </li>
+                      ))}
+                      {professor.courses.length > 3 && (
+                        <li className="text-purple-600 text-xs font-medium">
+                          +{professor.courses.length - 3} más...
+                        </li>
+                      )}
+                    </ul>
+                  </div>
+
+                  {/* Métricas de desempeño */}
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-lg p-2">
+                      <div className="flex items-center justify-between mb-1">
+                        <Star className="w-3 h-3 text-yellow-500" />
+                        <span className="text-xs text-gray-500">({professor.ratingVotes})</span>
+                      </div>
+                      <p className="text-base font-bold text-yellow-600">{professor.rating}</p>
+                      <p className="text-xs text-gray-600">Valoración</p>
                     </div>
                     
-                    {/* Información de contacto */}
-                    <div className="space-y-2 text-sm mb-4">
-                      <div className="flex items-center text-gray-600">
-                        <svg className="h-4 w-4 mr-2 flex-shrink-0 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                        </svg>
-                        <span>{professor.email}</span>
-                      </div>
-                      <div className="flex items-center text-gray-600">
-                        <svg className="h-4 w-4 mr-2 flex-shrink-0 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
-                        </svg>
-                        <span>{professor.phone}</span>
-                      </div>
-                      <div className="flex items-center text-gray-600">
-                        <svg className="h-4 w-4 mr-2 flex-shrink-0 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                        </svg>
-                        <span>{professor.totalStudents} estudiantes</span>
-                      </div>
-                    </div>
-                    
-                    {/* Cursos */}
-                    <div className="mb-4">
-                      <p className="text-sm font-medium text-gray-700 mb-2">Cursos:</p>
-                      <ul className="space-y-1 text-sm text-gray-600">
-                        {professor.courses.map((course, index) => (
-                          <li key={index} className="flex">
-                            <span className="mr-2">•</span>
-                            <span className="truncate" title={course}>{course}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                    
-                    {/* Sección de Puntualidad y Rating */}
-                    <div className="bg-gray-50 rounded-lg p-3 space-y-2">
-                      <div className="flex justify-between items-center">
-                        <div className="flex items-center">
-                          <svg className="h-4 w-4 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                          </svg>
-                          <span className="text-sm font-medium">Puntualidad: {professor.punctuality}%</span>
-                        </div>
-                        <Badge
-                          className={
-                            professor.punctuality >= 95
-                              ? "bg-green-500 text-white"
-                              : professor.punctuality >= 90
-                                ? "bg-blue-500 text-white"
-                                : "bg-yellow-500 text-white"
-                          }
-                        >
+                    <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg p-2">
+                      <div className="flex items-center justify-between mb-1">
+                        <Clock className="w-3 h-3 text-green-500" />
+                        <span className={`text-xs px-1 py-0.5 rounded-full ${
+                          professor.punctuality >= 95 ? 'bg-green-100 text-green-800' :
+                          professor.punctuality >= 90 ? 'bg-blue-100 text-blue-800' :
+                          'bg-yellow-100 text-yellow-800'
+                        }`}>
                           {professor.punctualityTrend}
-                        </Badge>
+                        </span>
                       </div>
-                      <div className="flex justify-between items-center">
-                        <div className="flex items-center">
-                          <svg className="h-4 w-4 mr-2 text-yellow-500" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                          </svg>
-                          <span className="text-sm font-medium">Valoración: {professor.rating}</span>
-                        </div>
-                        <span className="text-sm text-gray-600">({professor.ratingVotes} votos)</span>
-                      </div>
+                      <p className="text-base font-bold text-green-600">{professor.punctuality}%</p>
+                      <p className="text-xs text-gray-600">Puntualidad</p>
                     </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-12">
-              <div className="mx-auto bg-gray-200 border-2 border-dashed rounded-xl w-16 h-16 flex items-center justify-center mb-4">
-                <svg className="h-10 w-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
+                  </div>
+                </div>
               </div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No se encontraron profesores</h3>
-              <p className="text-gray-500">Intenta ajustar los filtros de búsqueda</p>
-            </div>
-          )}
+            ))}
+          </div>
         </div>
+
+        {/* Mensaje cuando no hay resultados */}
+        {filteredProfessors.length === 0 && (
+          <div className="text-center py-8">
+            <div className="w-14 h-14 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
+              <Search className="w-6 h-6 text-gray-400" />
+            </div>
+            <h3 className="text-lg font-semibold text-gray-600 mb-1">No se encontraron profesores</h3>
+            <p className="text-sm text-gray-500">
+              {searchTerm ? 'Intenta con un término de búsqueda diferente' : 'Ajusta los filtros para ver más resultados'}
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );
