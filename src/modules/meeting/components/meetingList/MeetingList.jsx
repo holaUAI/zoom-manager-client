@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { Video, Clock, User, Search, Loader2, Calendar, Users, Filter, ChevronDown } from "lucide-react";
-import { ClassDetailsModal } from "/home/user/zoom-manager/src/modules/dashboard/components/todaysClasses/modalInfo.jsx";
+import { ClassDetailsModal } from "../../../dashboard/components/todaysClasses/modalInfo";
 
 // Simulando el hook useReuniones para la demo
 const useReuniones = () => {
