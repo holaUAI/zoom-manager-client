@@ -1,9 +1,9 @@
-import { useHosts } from "../../hooks/useHosts";
+import { useTopRatedTutors } from "../../hooks/useTopRatedTutors";
 import { Link } from "react-router-dom";
 import { User, ChevronRight, Star } from "lucide-react";
 
 export default function TopProfessors() {
-    const { data, isLoading } = useHosts();
+    const { data, isLoading } = useTopRatedTutors();
 
     if (isLoading) return (
         <div className="bg-white p-4 border rounded-xl shadow-md border-gray-100 animate-pulse">
@@ -31,8 +31,8 @@ export default function TopProfessors() {
                     </div>
                     Top Profesores
                 </h2>
-                <Link 
-                    to={"/docentes"} 
+                <Link
+                    to={"/docentes"}
                     className="text-sm text-blue-600 hover:text-blue-800 font-medium flex items-center gap-1 transition-colors"
                 >
                     Ver más <ChevronRight size={16} />
@@ -41,22 +41,28 @@ export default function TopProfessors() {
 
             <ul className="space-y-3">
                 {data.slice(0, 5).map((prof, index) => (
-                    <li 
-                        key={index} 
+                    <li
+                        key={index}
                         className="group flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg transition-colors duration-200"
                     >
                         <div className="flex items-center gap-3">
                             <span className="font-semibold text-gray-500 w-5">{index + 1}.</span>
                             <div>
-                                <p className="font-medium text-gray-800">{prof.user_name}</p>
-                                <p className="text-xs text-gray-500 mt-1">{prof.email}</p>
+                                <p className="font-medium text-gray-800">
+                                    {prof.user_name || "Sin nombre"}
+                                </p>
+                                <p className="text-xs text-gray-500 mt-1">
+                                    {prof.email || "Sin correo"}
+                                </p>
                             </div>
                         </div>
                         <div className="flex items-center gap-2">
                             <div className="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-lg p-2">
                                 <div className="flex items-center gap-1">
                                     <Star className="w-4 h-4 text-yellow-500" />
-                                    <span className="font-semibold text-yellow-600">4.{9 - index}</span>
+                                    <span className="font-semibold text-yellow-600">
+                                        {prof.score_avg ?? "-"}
+                                    </span>
                                 </div>
                             </div>
                         </div>
