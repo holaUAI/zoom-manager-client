@@ -23,7 +23,9 @@ export default function MeetingDetailsModal({ isOpen, onClose, meetingId }) {
         join_url,
         summary,
     } = data;
-    const bodyContent = summary.match(/<body[^>]*>([\s\S]*?)<\/body>/i)?.[1] || "No hay contenido disponible.";
+    const bodyContent = summary
+        ? summary.match(/<body[^>]*>([\s\S]*?)<\/body>/i)?.[1] || "No hay contenido disponible."
+        : "No hay contenido disponible.";;
 
 
     const scheduledTime = start_time?.split(", ")[1] || "00:00";
