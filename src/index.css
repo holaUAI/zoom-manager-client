@@ -3,3 +3,25 @@
 body {
     font-family: 'Inter', sans-serif;
   }
+
+
+/* Estilos base (para todas las pantallas) */
+.sidebarHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px; /* equivalente a gap-3 en Tailwind */
+  padding-left: 8px; /* pl-2 */
+  margin-bottom: 24px; /* mb-6 */
+}
+
+/* Ajustes específicos para pantallas pequeñas */
+@media (max-width: 1366px) and (max-height: 639px) {
+  .sidebarHeader {
+    margin-bottom: 40px !important; /* mb-10 */
+    /* Opcional: reduce el tamaño del avatar si es necesario */
+  }
+  
+  .sidebarHeader .userText {
+    font-size: 0.875rem; /* text-sm */
+  }
+}
