@@ -1,15 +1,30 @@
 import { ms_meetings } from "../../shared/api/providers";
-import { n8n_api } from "../../shared/api/providers";
 
-const URI_PARTICIPANTS =  "/ms/v1/participant";
-const URI_MEETINGS = "/webhook/api/reuniones";
+const URI_RATINGS = "/ms/v1/rating";
+const URI_MEETTINGS_MS = "/ms/v1/meeting";
+const URI_PARTICIPANTS_MS = "/ms/v1/participant";
 
-export const getAllHosts = async () => {
-    const { data } = await ms_meetings.get(`${URI_PARTICIPANTS}/all-hosts`);
+export const getAllGroupedToday = async () => {
+    const { data } = await ms_meetings.get(`${URI_MEETTINGS_MS}/grouped-today`);
     return data;
 };
 
-export const getAllMeetings = async () => {
-    const { data } = await n8n_api.get(`${URI_MEETINGS}/get-all`);
+export const getTopDelayedHosts = async () => {
+    const { data } = await ms_meetings.get(`${URI_MEETTINGS_MS}/top-delayed-hosts`);
+    return data;
+};
+
+export const getTopTutorsRated = async () => {
+    const { data } = await ms_meetings.get(`${URI_RATINGS}/top-rated`);
+    return data;
+};
+
+export const getByMeetingId = async (id) => {
+    const { data } = await ms_meetings.get(`${URI_MEETTINGS_MS}/by-meeting-id/${id}`);
+    return data;
+};
+
+export const getHostById = async (id) => {
+    const { data } = await ms_meetings.get(`${URI_PARTICIPANTS_MS}/by-host-id/${id}`);
     return data;
 };
