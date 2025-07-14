@@ -1,9 +1,28 @@
-import React from 'react';
-import { Video, Mail, Star, Copy, ExternalLink, Clock, Calendar, Play, AlertTriangle, BookOpen, User, MapPin, Layers, Flag } from 'lucide-react';
+import React, { useState } from 'react';
+import {
+  Video,
+  Mail,
+  Star,
+  Copy,
+  ExternalLink,
+  Clock,
+  Calendar,
+  Play,
+  AlertTriangle,
+  BookOpen,
+  User,
+  MapPin,
+  Layers,
+  Flag
+} from 'lucide-react';
 
 export function ClassDetailsModal({ isOpen, onClose, selectedClass }) {
+  const [showParticipants, setShowParticipants] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+
   if (!isOpen || !selectedClass) return null;
 
+  // Función para copiar link al portapapeles
   const copyToClipboard = (text) => {
     navigator.clipboard.writeText(text).then(() => {
       alert('Link copiado al portapapeles');
@@ -32,19 +51,25 @@ export function ClassDetailsModal({ isOpen, onClose, selectedClass }) {
   const scheduled = selectedClass.scheduledTime ? parseTime(selectedClass.scheduledTime) : null;
   const opened = selectedClass.openedTime ? parseTime(selectedClass.openedTime) : null;
   const started = selectedClass.startedTime ? parseTime(selectedClass.startedTime) : null;
-
   const delayOpened = scheduled && opened ? getDelayText(scheduled, opened) : '';
   const delayStarted = scheduled && started ? getDelayText(scheduled, started) : '';
 
+  // Filtrado de participantes
+  const filteredParticipants = selectedClass.participants
+    ? selectedClass.participants.filter(p =>
+        p.user_name.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    : [];
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-      <div className="bg-white rounded-lg shadow-lg max-w-2xl w-full max-h-[85vh] overflow-y-auto p-4 relative">
+      {/* Modal principal */}
+      <div className="bg-white rounded-lg shadow-lg max-w-2xl w-full max-h-[85vh] overflow-y-auto p-4 relative animate-fadeIn">
         {/* Header */}
         <div className="flex items-center space-x-2 mb-2">
           <Video className="h-4 w-4 text-gray-700" />
           <h2 className="text-md font-semibold">Detalles de la Clase</h2>
         </div>
-
         <p className="text-xs text-gray-600 mb-4">Información completa de la sesión virtual</p>
 
         {/* Contenido */}
@@ -55,7 +80,6 @@ export function ClassDetailsModal({ isOpen, onClose, selectedClass }) {
               <Clock className="h-5 w-5 text-blue-600" />
               <h3 className="font-semibold text-lg text-gray-800">Detalles de Horario</h3>
             </div>
-
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {/* Fecha y Hora Programada */}
               <div className="relative">
@@ -73,7 +97,6 @@ export function ClassDetailsModal({ isOpen, onClose, selectedClass }) {
                   <p className="text-2xs text-gray-500 mt-1">Horario programado</p>
                 </div>
               </div>
-
               {/* Hora de Apertura */}
               {(selectedClass.status === "Finalizado" || selectedClass.status === "En curso") && (
                 <div className="relative">
@@ -105,7 +128,6 @@ export function ClassDetailsModal({ isOpen, onClose, selectedClass }) {
                   </div>
                 </div>
               )}
-
               {/* Hora de Inicio */}
               {(selectedClass.status === "Finalizado" || selectedClass.status === "En curso") && (
                 <div className="relative">
@@ -140,7 +162,6 @@ export function ClassDetailsModal({ isOpen, onClose, selectedClass }) {
             </div>
           </div>
 
-          {/* Resto del código permanece igual... */}
           {/* Información General y Detalles de Clase */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Información General */}
@@ -149,7 +170,6 @@ export function ClassDetailsModal({ isOpen, onClose, selectedClass }) {
                 <BookOpen className="h-5 w-5 text-green-600" />
                 <h3 className="font-semibold text-lg text-gray-800">Información General</h3>
               </div>
-
               <div className="space-y-3">
                 <div className="bg-white rounded-md p-3 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
                   <div className="flex items-center space-x-2 mb-1">
@@ -158,7 +178,6 @@ export function ClassDetailsModal({ isOpen, onClose, selectedClass }) {
                   </div>
                   <p className="text-sm font-semibold text-gray-800">{selectedClass.specialty || '-'}</p>
                 </div>
-
                 <div className="bg-white rounded-md p-3 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
                   <div className="flex items-center space-x-2 mb-1">
                     <MapPin className="h-4 w-4 text-green-600" />
@@ -166,7 +185,6 @@ export function ClassDetailsModal({ isOpen, onClose, selectedClass }) {
                   </div>
                   <p className="text-sm font-semibold text-gray-800">{selectedClass.sede || '-'}</p>
                 </div>
-
                 <div className="bg-white rounded-md p-3 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
                   <div className="flex items-center space-x-2 mb-1">
                     <User className="h-4 w-4 text-green-600" />
@@ -174,13 +192,22 @@ export function ClassDetailsModal({ isOpen, onClose, selectedClass }) {
                   </div>
                   <p className="text-sm font-semibold text-gray-800">{selectedClass.professor || '-'}</p>
                 </div>
-
                 <div className="bg-white rounded-md p-3 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
                   <div className="flex items-center space-x-2 mb-1">
                     <Mail className="h-4 w-4 text-green-600" />
                     <span className="text-xs font-medium text-gray-600">Email del docente</span>
                   </div>
                   <p className="text-sm font-semibold text-gray-800">{selectedClass.hostEmail || '-'}</p>
+                </div>
+                {/* Botón para mostrar participantes */}
+                <div className="bg-white rounded-md p-3 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+                  <button
+                    onClick={() => setShowParticipants(true)}
+                    className="w-full text-center text-xs font-medium text-purple-600 hover:text-purple-800 flex items-center justify-center space-x-1"
+                  >
+                    <User className="h-3 w-3" />
+                    <span>Ver participantes</span>
+                  </button>
                 </div>
               </div>
             </div>
@@ -191,7 +218,6 @@ export function ClassDetailsModal({ isOpen, onClose, selectedClass }) {
                 <Flag className="h-5 w-5 text-purple-600" />
                 <h3 className="font-semibold text-lg text-gray-800">Detalles de la Clase</h3>
               </div>
-
               <div className="space-y-3">
                 <div className="bg-white rounded-md p-3 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
                   <div className="flex items-center space-x-2 mb-1">
@@ -200,7 +226,6 @@ export function ClassDetailsModal({ isOpen, onClose, selectedClass }) {
                   </div>
                   <p className="text-sm font-semibold text-gray-800">5 de 20 clases</p>
                 </div>
-
                 <div className="bg-white rounded-md p-3 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
                   <div className="flex items-center space-x-2 mb-1">
                     <Star className="h-4 w-4 text-purple-600" />
@@ -210,7 +235,6 @@ export function ClassDetailsModal({ isOpen, onClose, selectedClass }) {
                     4.5 <Star className="h-3 w-3 text-yellow-500 ml-1 fill-yellow-500" />
                   </p>
                 </div>
-
                 <div className="bg-white rounded-md p-3 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
                   <div className="flex items-center space-x-2 mb-1">
                     <Clock className="h-4 w-4 text-purple-600" />
@@ -226,7 +250,6 @@ export function ClassDetailsModal({ isOpen, onClose, selectedClass }) {
                     {selectedClass.status}
                   </span>
                 </div>
-
                 <div className="bg-white rounded-md p-3 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
                   <div className="flex items-center space-x-2 mb-1">
                     <Video className="h-4 w-4 text-purple-600" />
@@ -283,6 +306,60 @@ export function ClassDetailsModal({ isOpen, onClose, selectedClass }) {
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
+
+      {/* Segundo Modal - Lista de Participantes */}
+      {showParticipants && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 animate-fadeIn">
+          <div className="bg-white rounded-lg shadow-lg max-w-md w-full p-4 relative transform transition-all duration-300 ease-in-out scale-100">
+            <h3 className="text-lg font-semibold mb-2">Lista de Participantes</h3>
+
+            {/* Barra de búsqueda */}
+            <div className="mb-3">
+              <input
+                type="text"
+                placeholder="Buscar por nombre..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-purple-500"
+              />
+            </div>
+
+            {/* Lista de participantes con scroll */}
+            <ul className="max-h-64 overflow-y-auto divide-y divide-gray-200 pr-1">
+              {filteredParticipants.length > 0 ? (
+                filteredParticipants.map((participant, index) => (
+                  <li key={index} className="py-2">
+                    <p className="text-sm font-medium text-gray-800">{participant.user_name}</p>
+                    <p className="text-xs text-gray-500 truncate">{participant.email}</p>
+                    <p className="text-xs text-gray-500 mt-1">Se unió: {participant.join_time}</p>
+                  </li>
+                ))
+              ) : (
+                <p className="text-sm text-gray-500 py-4 text-center">No se encontraron participantes.</p>
+              )}
+            </ul>
+
+            {/* Botón de cerrar */}
+            <button
+              onClick={() => setShowParticipants(false)}
+              className="mt-4 ml-auto block text-gray-500 hover:text-gray-800 text-lg"
+            >
+              Cerrar
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Animaciones */}
+      <style jsx>{`
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        .animate-fadeIn {
+          animation: fadeIn 0.2s ease-out forwards;
+        }
+      `}</style>
     </div>
   );
 }
