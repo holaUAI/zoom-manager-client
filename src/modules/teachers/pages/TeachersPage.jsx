@@ -26,7 +26,7 @@ export default function TeacherPage() {
     {
       id: 2,
       name: "Pierina Alejandra Briceño Villa",
-      email: "Pierina.Briseño@uai.edu.pe",
+      email: "Pierina.Briceño@uai.edu.pe",
       phone: "+51 (01) 123-4568",
       rating: 4.7,
       ratingVotes: 45,

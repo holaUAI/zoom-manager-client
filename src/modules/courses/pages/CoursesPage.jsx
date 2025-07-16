@@ -566,24 +566,12 @@ export default function CoursesPage({ onNavigate }) {
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-100 p-4 md:p-6">
       {/* Header */}
-      <div className="bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 text-white rounded-xl shadow-lg mb-6 backdrop-blur-sm">
+      <div className="text-gray-900 mb-6">
         <div className="max-w-7xl mx-auto px-4 py-5">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="flex items-center space-x-3">
-              <div>
-                <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-white to-blue-100 bg-clip-text text-transparent">
-                  Cursos Académicos
-                </h1>
-                <p className="text-blue-100 text-sm sm:text-base">Gestión completa de programas educativos</p>
-              </div>
-            </div>
-            <div className="flex items-center space-x-2">
-              <GraduationCap className="h-6 w-6 text-white/80" />
-              <div className="text-right">
-                <p className="text-xs text-blue-100">Sistema Académico</p>
-                <p className="text-xs text-blue-200">Universidad</p>
-              </div>
-            </div>
+          <div className="flex flex-col items-center justify-center gap-2 text-center">
+            <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              Cursos Académicos
+            </h1>
           </div>
         </div>
       </div>
