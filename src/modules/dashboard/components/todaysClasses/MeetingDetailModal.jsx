@@ -99,7 +99,14 @@ export default function MeetingDetailsModal({ isOpen, onClose, meetingId }) {
                                     <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
                                 </div>
                                 <p className="text-sm font-semibold text-gray-800">{startedTime}</p>
-                                <p className="mt-1 text-3xs text-green-600">Inició {delayStarted}</p>
+                                <div className="mt-1 text-3xs text-orange-600 flex items-center gap-1">
+                                    {delay_min > 0 &&
+                                        <>
+                                            <AlertTriangle className="h-3 w-3" />
+                                            Entró {delay_min} minutos tarde
+                                        </>
+                                    }
+                                </div>
                             </div>
                         </div>
                     </div>
