@@ -1,5 +1,4 @@
 import { useMeetingById } from "../../hooks/useGetMeetingById";
-
 import {
     Video, Mail, Star, Copy, ExternalLink,
     Clock, Calendar, Play, AlertTriangle, BookOpen,
@@ -8,9 +7,8 @@ import {
 
 export default function MeetingDetailsModal({ isOpen, onClose, meetingId }) {
     const { data, isLoading, error } = useMeetingById(meetingId);
-
     if (!isOpen) return null;
-    if (isLoading) return <div></div>;
+    if (isLoading) return <div>Cargando...</div>;
     if (error || !data) return <div>Error al cargar</div>;
 
     const {
@@ -23,19 +21,34 @@ export default function MeetingDetailsModal({ isOpen, onClose, meetingId }) {
         join_url,
         summary,
     } = data;
+
     const bodyContent = summary
         ? summary.match(/<body[^>]*>([\s\S]*?)<\/body>/i)?.[1] || "No hay contenido disponible."
-        : "No hay contenido disponible.";;
-
+        : "No hay contenido disponible.";
 
     const scheduledTime = start_time?.split(", ")[1] || "00:00";
     const date = start_time?.split(", ")[0] || "00/00/0000";
-    const openedTime = scheduledTime;
-    const startedTime = scheduledTime;
-    const delayStarted = "A tiempo";
+
+    // Determina si la clase ya inició
+    const isMeetingStarted = status === "started" || status === "finished";
+
+    const openedTime = isMeetingStarted ? scheduledTime : "Aún no iniciado";
+    const startedTime = isMeetingStarted ? scheduledTime : "Esperando apertura de sesión";
 
     const copyToClipboard = (text) => {
         navigator.clipboard.writeText(text);
+    };
+
+    // Traducción del estado a español
+    const getStatusText = (status) => {
+        switch (status) {
+            case "finished":
+                return "Finalizada";
+            case "started":
+                return "En curso";
+            default:
+                return "Pendiente";
+        }
     };
 
     return (
@@ -45,9 +58,7 @@ export default function MeetingDetailsModal({ isOpen, onClose, meetingId }) {
                     <Video className="h-4 w-4 text-gray-700" />
                     <h2 className="text-md font-semibold">Detalles de la Clase</h2>
                 </div>
-
                 <p className="text-xs text-gray-600 mb-4">Información completa de la sesión virtual</p>
-
                 <div className="space-y-4">
                     {/* Detalles de Horario */}
                     <div className="border rounded-lg p-4 bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
@@ -55,7 +66,6 @@ export default function MeetingDetailsModal({ isOpen, onClose, meetingId }) {
                             <Clock className="h-5 w-5 text-blue-600" />
                             <h3 className="font-semibold text-lg text-gray-800">Detalles de Horario</h3>
                         </div>
-
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div className="bg-white rounded-md p-3 border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
                                 <div className="flex items-center justify-between mb-2">
@@ -70,7 +80,6 @@ export default function MeetingDetailsModal({ isOpen, onClose, meetingId }) {
                                 </p>
                                 <p className="text-2xs text-gray-500 mt-1">Horario programado</p>
                             </div>
-
                             <div className="bg-white rounded-md p-3 border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
                                 <div className="flex items-center justify-between mb-2">
                                     <div className="flex items-center space-x-1">
@@ -81,15 +90,14 @@ export default function MeetingDetailsModal({ isOpen, onClose, meetingId }) {
                                 </div>
                                 <p className="text-sm font-semibold text-gray-800">{openedTime}</p>
                                 <div className="mt-1 text-3xs text-orange-600 flex items-center gap-1">
-                                    {delay_min > 0 &&
+                                    {delay_min > 0 && (
                                         <>
                                             <AlertTriangle className="h-3 w-3" />
                                             Entró {delay_min} minutos tarde
                                         </>
-                                    }
+                                    )}
                                 </div>
                             </div>
-
                             <div className="bg-white rounded-md p-3 border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
                                 <div className="flex items-center justify-between mb-2">
                                     <div className="flex items-center space-x-1">
@@ -100,17 +108,16 @@ export default function MeetingDetailsModal({ isOpen, onClose, meetingId }) {
                                 </div>
                                 <p className="text-sm font-semibold text-gray-800">{startedTime}</p>
                                 <div className="mt-1 text-3xs text-orange-600 flex items-center gap-1">
-                                    {delay_min > 0 &&
+                                    {delay_min > 0 && (
                                         <>
                                             <AlertTriangle className="h-3 w-3" />
                                             Entró {delay_min} minutos tarde
                                         </>
-                                    }
+                                    )}
                                 </div>
                             </div>
                         </div>
                     </div>
-
                     {/* Info General y Detalles */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="border rounded-lg p-4 bg-gradient-to-r from-green-50 to-emerald-50 border-green-200">
@@ -118,7 +125,6 @@ export default function MeetingDetailsModal({ isOpen, onClose, meetingId }) {
                                 <BookOpen className="h-5 w-5 text-green-600" />
                                 <h3 className="font-semibold text-lg text-gray-800">Información General</h3>
                             </div>
-
                             <div className="space-y-3">
                                 {[
                                     { icon: Layers, label: "Tema", value: topic },
@@ -137,13 +143,11 @@ export default function MeetingDetailsModal({ isOpen, onClose, meetingId }) {
                                 ))}
                             </div>
                         </div>
-
                         <div className="border rounded-lg p-4 bg-gradient-to-r from-purple-50 to-violet-50 border-purple-200">
                             <div className="flex items-center space-x-2 mb-4">
                                 <Flag className="h-5 w-5 text-purple-600" />
                                 <h3 className="font-semibold text-lg text-gray-800">Detalles de la Clase</h3>
                             </div>
-
                             <div className="space-y-3">
                                 <div className="bg-white rounded-md p-3 border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
                                     <div className="flex items-center space-x-2 mb-1">
@@ -154,29 +158,27 @@ export default function MeetingDetailsModal({ isOpen, onClose, meetingId }) {
                                         4.5 <Star className="h-3 w-3 text-yellow-500 ml-1 fill-yellow-500" />
                                     </p>
                                 </div>
-
                                 <div className="bg-white rounded-md p-3 border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
                                     <div className="flex items-center space-x-2 mb-1">
                                         <Clock className="h-4 w-4 text-purple-600" />
                                         <span className="text-xs font-medium text-gray-600">Estado de la clase</span>
                                     </div>
-                                    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-2xs font-medium ${status === "finished"
-                                        ? "bg-gray-100 text-gray-800"
-                                        : status === "started"
-                                            ? "bg-green-100 text-green-800"
-                                            : "bg-orange-100 text-orange-800"
+                                    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-2xs font-medium ${
+                                        status === "finished"
+                                            ? "bg-gray-100 text-gray-800"
+                                            : status === "started"
+                                                ? "bg-green-100 text-green-800"
+                                                : "bg-orange-100 text-orange-800"
                                         }`}>
-                                        {status}
+                                        {getStatusText(status)}
                                     </span>
                                 </div>
-
                                 <div className="bg-white rounded-md p-3 border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
                                     <div className="flex items-center space-x-2 mb-1">
                                         <Video className="h-4 w-4 text-purple-600" />
                                         <span className="text-xs font-medium text-gray-600">Link del Zoom</span>
                                     </div>
                                     <div className="flex items-center space-x-2">
-
                                         <button
                                             onClick={() => copyToClipboard(join_url)}
                                             className="text-gray-600 hover:text-gray-900 p-1.5 rounded-full hover:bg-gray-100"
@@ -196,7 +198,6 @@ export default function MeetingDetailsModal({ isOpen, onClose, meetingId }) {
                             </div>
                         </div>
                     </div>
-
                     {/* Resumen */}
                     {status === "finished" && (
                         <div className="border rounded-lg p-4 bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200">
@@ -219,7 +220,6 @@ export default function MeetingDetailsModal({ isOpen, onClose, meetingId }) {
                         </div>
                     )}
                 </div>
-
                 <button
                     onClick={onClose}
                     className="absolute top-2 right-2 text-gray-500 hover:text-gray-800 text-lg"

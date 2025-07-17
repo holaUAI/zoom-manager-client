@@ -4,27 +4,46 @@ import TodaysClasses from "../components/todaysClasses/TodaysClasses";
 import TopProfessors from "../components/topProfessors/TopProfessors";
 import TopCourses from "../components/TopCourses/TopCourses";
 import TopTardyTeachers from "../components/percentageProfesors/PercentageProfesors.jsx";
+import { useAtom } from "jotai";
+import { sidebarOpenAtom } from "../../shared/atoms/sidebarAtom";
 
 export const Dashboard = () => {
+    const [open] = useAtom(sidebarOpenAtom);
+
     return (
-        <div className="space-y-6">
-            <StatsCards />
+        <div className="relative">
+            {/* Logo fijo en la esquina superior izquierda */}
+            <div 
+                className={`fixed top-4 z-40 transition-all duration-300 ease-in-out ${
+                    open ? "left-[17rem]" : "left-[4.5rem]"
+                }`}
+            >
+                <img 
+                    src="/tutor.IA.png" 
+                    alt="Tutor IA Logo" 
+                    className="h-10" // Ajusta el tamaño según necesites
+                />
+            </div>
 
-            <div className="grid grid-cols-1 xl:grid-cols-7 gap-4 items-start"> {/* Cambiamos a 7 columnas para más granularidad */}
-                {/* Columna izquierda - ahora 2.5/7 (era 3/6) */}
-                <div className="xl:col-span-2 space-y-4">
-                    <TopProfessors />
-                    <TopCourses />
-                </div>
+            {/* Contenido principal SIN padding izquierdo */}
+            <div className={`pt-16 ${open ? "ml-05" : "ml-05"} transition-all duration-300 ease-in-out`}>
+                <div className="space-y-6 px-4"> {/* Añade padding horizontal si es necesario */}
+                    <StatsCards />
 
-                {/* Columna central - ahora 2.5/7 (era 2/6) */}
-                <div className="xl:col-span-3"> {/* Aumentado a 3 columnas */}
-                    <TodaysClasses />
-                </div>
+                    <div className="grid grid-cols-1 xl:grid-cols-7 gap-4 items-start">
+                        <div className="xl:col-span-2 space-y-4">
+                            <TopProfessors />
+                            <TopCourses />
+                        </div>
 
-                {/* Columna derecha - mantiene proporción similar (2/7 vs antes 2/6) */}
-                <div className="xl:col-span-2 space-y-3">
-                    <TopTardyTeachers />
+                        <div className="xl:col-span-3">
+                            <TodaysClasses />
+                        </div>
+
+                        <div className="xl:col-span-2 space-y-3">
+                            <TopTardyTeachers />
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
