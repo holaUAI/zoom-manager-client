@@ -3,6 +3,7 @@ import { useGroupedTodayMeetings } from "../../hooks/useMeetingAllToday";
 import { CalendarDays, Clock, WifiOff, RotateCw } from "lucide-react";
 import { cn } from "../../../../lib/utils";
 import MeetingDetailsModal from "./MeetingDetailModal";
+import { parseLatamDateTime } from "../../../shared/utils/parseLatamDatetime";
 
 const TABS = [
     {
@@ -101,7 +102,7 @@ export default function TodaysClasses() {
                     </p>
                 ) : (
                     meetings.map((r) => {
-                        const inicio = new Date(r.start_time);
+                        const inicio = parseLatamDateTime(r.start_time);
                         const fin = new Date(inicio.getTime() + r.duration * 60000);
 
                         return (
