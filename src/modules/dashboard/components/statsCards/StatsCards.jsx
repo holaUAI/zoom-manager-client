@@ -4,54 +4,58 @@ import {
     BookOpen,
     Briefcase,
     GraduationCap,
+    Users
 } from "lucide-react";
-
-const stats = [
-    {
-        title: "Promedio de Puntualidad del Docente",
-        value: "94.8%",
-        icon: Clock,
-        bg: "bg-gradient-to-r from-green-500 to-green-600",
-        iconBg: "bg-green-700",
-    },
-    {
-        title: "Puntuación Promedio de clases",
-        value: "4.6",
-        icon: Star,
-        bg: "bg-gradient-to-r from-yellow-500 to-yellow-600",
-        iconBg: "bg-yellow-700",
-    },
-    {
-        title: "Puntuación promedio de cursos",
-        value: "4.5",
-        icon: BookOpen,
-        bg: "bg-gradient-to-r from-purple-500 to-purple-600",
-        iconBg: "bg-purple-700",
-    },
-    {
-        title: "Puntuación promedio de profesores",
-        value: "4.2",
-        icon: Star,
-        bg: "bg-gradient-to-r from-blue-500 to-blue-600",
-        iconBg: "bg-blue-700",
-    },
-    {
-        title: "Horas Impartidas",
-        value: "2,150",
-        icon: Briefcase,
-        bg: "bg-gradient-to-r from-orange-500 to-orange-600",
-        iconBg: "bg-orange-700",
-    },
-    {
-        title: "Total de Alumnos",
-        value: "1,451",
-        icon: GraduationCap,
-        bg: "bg-gradient-to-r from-indigo-500 to-indigo-600",
-        iconBg: "bg-indigo-700",
-    },
-];
+import { useGlobalAverage } from "../../hooks/useGlobalAverage";
 
 export default function StatsCards() {
+    const { data, isLoading } = useGlobalAverage();
+
+    const stats = [
+        {
+            title: "Promedio de Puntualidad del Docente",
+            value: "94.8%",
+            icon: Clock,
+            bg: "bg-gradient-to-r from-green-500 to-green-600",
+            iconBg: "bg-green-700",
+        },
+        {
+            title: "Promedio de Asistentes por clases",
+            value: "20",
+            icon: Users,
+            bg: "bg-gradient-to-r from-yellow-500 to-yellow-600",
+            iconBg: "bg-yellow-700",
+        },
+        {
+            title: "Puntuación promedio de cursos",
+            value: "4.5",
+            icon: BookOpen,
+            bg: "bg-gradient-to-r from-purple-500 to-purple-600",
+            iconBg: "bg-purple-700",
+        },
+        {
+            title: "Puntuación promedio de profesores",
+            value: isLoading ? "..." : (data?.data?.score_avg?.toFixed(2) ?? "N/A"),
+            icon: Star,
+            bg: "bg-gradient-to-r from-blue-500 to-blue-600",
+            iconBg: "bg-blue-700",
+        },
+        {
+            title: "Horas Impartidas",
+            value: "2,150",
+            icon: Briefcase,
+            bg: "bg-gradient-to-r from-orange-500 to-orange-600",
+            iconBg: "bg-orange-700",
+        },
+        {
+            title: "Total de Alumnos",
+            value: "1,451",
+            icon: GraduationCap,
+            bg: "bg-gradient-to-r from-indigo-500 to-indigo-600",
+            iconBg: "bg-indigo-700",
+        },
+    ];
+
     return (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             {stats.map((stat, i) => {

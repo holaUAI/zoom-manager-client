@@ -7,3 +7,9 @@ export const getAll = async () => {
     return data;
 };
 
+export const getLastMeetings = async (limit) => {
+    const { data } = await ms_meetings.get(`${URI}/last`, {
+      params: { limit }
+    });
+    return data;
+};
