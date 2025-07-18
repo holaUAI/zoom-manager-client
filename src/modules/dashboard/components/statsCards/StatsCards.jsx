@@ -4,6 +4,7 @@ import {
     BookOpen,
     Briefcase,
     GraduationCap,
+    Users
 } from "lucide-react";
 
 const stats = [
@@ -17,7 +18,7 @@ const stats = [
     {
         title: "Promedio de Asistentes por clases",
         value: "20",
-        icon: Star,
+        icon: Users,
         bg: "bg-gradient-to-r from-yellow-500 to-yellow-600",
         iconBg: "bg-yellow-700",
     },
