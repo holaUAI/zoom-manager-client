@@ -33,3 +33,8 @@ export const getParticipantsByMeetingId = async (id) => {
     const { data } = await ms_meetings.get(`${URI_PARTICIPANTS_MS}/all-participants-by-meeting/${id}`);
     return data;
 };
+
+export const globalAverage = async () => {
+    const { data } = await ms_meetings.get(`${URI_RATINGS}/global-average`);
+    return data;
+}
