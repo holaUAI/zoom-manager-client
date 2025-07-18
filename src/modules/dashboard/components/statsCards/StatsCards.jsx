@@ -15,8 +15,8 @@ const stats = [
         iconBg: "bg-green-700",
     },
     {
-        title: "Puntuación Promedio de clases",
-        value: "4.6",
+        title: "Promedio de Asistentes por clases",
+        value: "20",
         icon: Star,
         bg: "bg-gradient-to-r from-yellow-500 to-yellow-600",
         iconBg: "bg-yellow-700",
