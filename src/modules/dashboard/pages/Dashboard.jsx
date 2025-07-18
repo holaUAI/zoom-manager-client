@@ -14,7 +14,7 @@ export const Dashboard = () => {
         <div className="relative">
             {/* Logo fijo en la esquina superior izquierda */}
             <div 
-                className={`fixed top-4 z-40 transition-all duration-300 ease-in-out ${
+                className={`top-4 transition-all duration-300 ease-in-out ${
                     open ? "left-[17rem]" : "left-[4.5rem]"
                 }`}
             >
