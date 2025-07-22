@@ -5,8 +5,8 @@ import { Link } from "react-router-dom";
 export default function SidebarMenu({ open, isActive }) {
     const links = [
       { to: "/", label: "Dashboard", icon: <Home /> },
-      { to: "/reuniones", label: "Reuniones", icon: <Video /> },
-      { to: "/docentes", label: "Docentes", icon: <Users /> },
+      { to: "/reuniones", label: "Clases", icon: <Video /> },
+      { to: "/docentes", label: "Profesores", icon: <Users /> },
       { to: "/cursos", label: "Cursos", icon: <BookOpen /> },
     ];
   
