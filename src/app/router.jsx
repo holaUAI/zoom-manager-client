@@ -72,7 +72,7 @@ const router = createBrowserRouter([
                 </Layout>
             </ProtectedRoute>
         )
-    },
+    },	
 ]);
 
 export default router;
