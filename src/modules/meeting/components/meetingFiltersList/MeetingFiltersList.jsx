@@ -10,12 +10,21 @@ import MeetingDetailsModal from "../../../dashboard/components/todaysClasses/Mee
 // ✅ Utilidad local para evitar errores por fechas inválidas
 const safeFormat = (dateStr, pattern = "dd MMM yyyy - HH:mm") => {
   try {
-    const date = new Date(dateStr);
+    if (!dateStr) return "Fecha inválida";
+
+    const [datePart, timePart] = dateStr.split(", ");
+    const [day, month, year] = datePart.split("/");
+
+    // Creamos un string ISO válido: yyyy-MM-ddTHH:mm
+    const isoString = `${year}-${month}-${day}T${timePart}`;
+
+    const date = new Date(isoString);
     return isValid(date) ? format(date, pattern) : "Fecha inválida";
   } catch {
     return "Fecha inválida";
   }
 };
+
 
 const TABS = [
   { key: "started", label: "En curso" },
@@ -69,13 +78,13 @@ const MeetingList = ({ limit = 2000 }) => {
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-100 py-8 px-4">
       <div className="text-center mb-6 space-y-1">
         <h1 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-blue-600">
-          Lista de Reuniones
+          Lista de Clases
         </h1>
-        <p className="text-sm text-gray-500">Gestiona y monitorea todas tus reuniones</p>
+        <p className="text-sm text-gray-500">Gestiona y monitorea todas tus Clases</p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-6 max-w-5xl mx-auto">
-        <MetricCard label="Total Reuniones" icon={<Calendar size={20} />} value={getTotalMeetings()} color="purple" />
+        <MetricCard label="Total Clases" icon={<Calendar size={20} />} value={getTotalMeetings()} color="purple" />
         <MetricCard label="En Curso" icon={<Users size={20} />} value={data.started?.length || 0} color="green" />
         <MetricCard label="Próximas" icon={<Clock size={20} />} value={data.pending?.length || 0} color="yellow" />
         <MetricCard label="Sin Iniciar" icon={<Clock size={20} />} value={data.not_open?.length || 0} color="red" />
@@ -112,7 +121,7 @@ const MeetingList = ({ limit = 2000 }) => {
       {isLoading ? (
         <LoadingScreen />
       ) : filteredMeetings.length === 0 ? (
-        <p className="text-center text-gray-400">No hay reuniones que coincidan.</p>
+        <p className="text-center text-gray-400">No hay clases que coincidan.</p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredMeetings.map((meeting, index) => (
