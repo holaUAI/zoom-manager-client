@@ -42,7 +42,7 @@ export default function TopTardyTeachers() {
           <div className="w-10 h-10 bg-gradient-to-r from-red-500 to-orange-500 rounded-full flex items-center justify-center">
             <Clock className="w-5 h-5 text-white" />
           </div>
-          <span className="text-sm sm:text-base">Top 5 Profesores con Más Tardanzas</span>
+          <span className="text-sm sm:text-base">Profesores con Más Tardanzas</span>
         </h2>
       </div>
 

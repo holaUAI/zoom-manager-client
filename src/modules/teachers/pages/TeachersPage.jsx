@@ -140,7 +140,7 @@ export default function TeacherPage() {
           <div className="bg-white p-4 shadow-lg rounded-xl border border-yellow-100 hover:shadow-xl transition-all duration-300">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs font-medium text-gray-500 mb-1">Rating Promedio</p>
+                <p className="text-xs font-medium text-gray-500 mb-1">Puntuacion Promedio</p>
                 <p className="text-2xl font-bold text-yellow-600">{averageRating}</p>
               </div>
               <div className="w-10 h-10 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-full flex items-center justify-center">
@@ -182,7 +182,7 @@ export default function TeacherPage() {
                 onChange={(e) => setSortBy(e.target.value)}
                 className="px-4 py-2 border-2 border-gray-200 rounded-lg text-xs bg-white shadow-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 appearance-none cursor-pointer"
               >
-                <option value="rating">Ordenar por Rating</option>
+                <option value="rating">Ordenar por Puntuación</option>
                 <option value="name">Ordenar por Nombre</option>
                 <option value="students">Ordenar por Estudiantes</option>
                 <option value="punctuality">Ordenar por Puntualidad</option>
