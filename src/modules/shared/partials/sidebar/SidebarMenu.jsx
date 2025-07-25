@@ -1,11 +1,12 @@
 // src/partials/sidebar/SidebarMenu.jsx
-import { Video, Users, BookOpen, Home } from "lucide-react";
+import { Video, Users, BookOpen, Home, UserSearch } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function SidebarMenu({ open, isActive }) {
     const links = [
       { to: "/", label: "Dashboard", icon: <Home /> },
-      { to: "/reuniones", label: "Clases", icon: <Video /> },
+      { to: "/reuniones", label: "Monitoreo", icon: <UserSearch /> },
+      { to: "/clases", label: "clases", icon: <Video /> },
       { to: "/docentes", label: "Profesores", icon: <Users /> },
       { to: "/cursos", label: "Cursos", icon: <BookOpen /> },
     ];
