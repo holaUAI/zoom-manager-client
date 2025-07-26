@@ -9,6 +9,7 @@ import { HomePage } from "../modules/Home/pages/Home";
 import ReunionesPage from "../modules/meeting/pages/MeetingsPage";
 import TeacherPage from "../modules/teachers/pages/TeachersPage";
 import CoursesPage from "../modules/courses/pages/CoursesPage";
+import { ClasesSiguPage } from "../modules/clasesSigu/pages/ClasesSiguPage";
 
 
 const ProtectedRoute = ({ children }) => {
@@ -52,6 +53,16 @@ const router = createBrowserRouter([
                 </Layout>
             </ProtectedRoute>
         ),
+    },
+    {
+        path: "/clasesSigu",
+        element: (
+            <ProtectedRoute>
+                <Layout>
+                    <ClasesSiguPage />
+                </Layout>
+            </ProtectedRoute>
+        )
     },
     {
         path: "/docentes",
