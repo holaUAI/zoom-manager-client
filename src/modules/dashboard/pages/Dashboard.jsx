@@ -33,7 +33,7 @@ export const Dashboard = () => {
                     <div className="grid grid-cols-1 xl:grid-cols-7 gap-4 items-start">
                         <div className="xl:col-span-2 space-y-4">
                             <TopProfessors />
-                            <TopCourses />
+                            {/*<TopCourses /> */}
                         </div>
 
                         <div className="xl:col-span-3">

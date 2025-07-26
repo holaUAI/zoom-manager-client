@@ -1,117 +1,73 @@
 import React, { useState, useMemo } from 'react';
-import { Search, Star, Clock, Users, BookOpen, Phone, Mail, MapPin, TrendingUp, User, GraduationCap, Filter } from 'lucide-react';
+import { Search, User, GraduationCap, Filter, ChevronRight } from 'lucide-react';
+import { useDocentes } from "../hooks/useGetAllDocentes";
 
 export default function TeacherPage() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [sortBy, setSortBy] = useState("rating");
+  const [sortBy, setSortBy] = useState("name");
   const [filterBy, setFilterBy] = useState("all");
 
-  const professorsData = [
-    {
-      id: 1,
-      name: "Dante Fabian Luque Zelada",
-      email: "DanteLuque@uai.edu.pe",
-      phone: "+51 (01) 123-4567",
-      rating: 4.9,
-      ratingVotes: 60,
-      totalStudents: 60,
-      courses: ["Bases Conceptuales de las Políticas Públicas", "Gestión y Desarrollo en Salud", "Salud Pública Avanzada", "Metodología de Investigación"],
-      specialty: "Doctorado en Salud Pública",
-      sede: "PRINCIPAL",
-      status: "Activo",
-      punctuality: 98,
-      punctualityTrend: "Excelente",
-      avatar: "/placeholder.svg?height=80&width=80",
-    },
-    {
-      id: 2,
-      name: "Pierina Alejandra Briceño Villa",
-      email: "Pierina.Briceño@uai.edu.pe",
-      phone: "+51 (01) 123-4568",
-      rating: 4.7,
-      ratingVotes: 45,
-      totalStudents: 45,
-      courses: ["Administración Estratégica", "Gestión de Recursos Humanos", "Liderazgo Organizacional"],
-      specialty: "Doctorado en Administración",
-      sede: "PRINCIPAL",
-      status: "Activo",
-      punctuality: 95,
-      punctualityTrend: "Excelente",
-      avatar: "/placeholder.svg?height=80&width=80",
-    },
-    {
-      id: 3,
-      name: "Luis Miguel Felix Atuncar",
-      email: "Luis.Felix@uai.edu.pe",
-      phone: "+51 (01) 123-4569",
-      rating: 4.5,
-      ratingVotes: 38,
-      totalStudents: 38,
-      courses: ["Epidemiología", "Bioestadística", "Investigación en Salud"],
-      specialty: "Doctorado en Salud Pública",
-      sede: "FILIAL",
-      status: "Activo",
-      punctuality: 82,
-      punctualityTrend: "Bueno",
-      avatar: "/placeholder.svg?height=80&width=80",
-    },
-    {
-      id: 4,
-      name: "Sher Jhair Mendoza Quispe",
-      email: "Sher.Mendoza@uai.edu.pe",
-      phone: "+51 (01) 456-7890",
-      rating: 4.6,
-      ratingVotes: 27,
-      totalStudents: 27,
-      courses: ["Realidad Nacional en Salud Publica","Seminario de Tesis II"],
-      specialty: "Doctorado en Salud Pública",
-      sede: "PRINCIPAL",
-      status: "Activo",
-      punctuality: 95,
-      punctualityTrend: "Excelente",
-      avatar: "/placeholder.svg?height=80&width=80",
-    }
-  ];
+  // Usar hook
+  const { data: professorsData = [], isLoading, isError } = useDocentes();
+
+  // Mapear condiciones a texto legible
+  const condicionMap = {
+    "C": "Contratado",
+    "N": "Nombrado"
+  };
+
+  // Mapear estados a texto legible
+  const estadoMap = {
+    1: "Activo",
+    0: "Inactivo"
+  };
 
   const filteredProfessors = useMemo(() => {
     return professorsData
       .filter((professor) => {
+        const fullName = `${professor.c_apepat} ${professor.c_apemat} ${professor.c_nombres}`.toLowerCase();
         const matchesSearch =
-          professor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          professor.courses.some((course) =>
-            course.toLowerCase().includes(searchTerm.toLowerCase())
-          ) ||
-          professor.specialty.toLowerCase().includes(searchTerm.toLowerCase());
+          fullName.includes(searchTerm.toLowerCase()) ||
+          professor.c_dni.includes(searchTerm.toLowerCase()) ||
+          professor.cargo.toLowerCase().includes(searchTerm.toLowerCase());
 
         const matchesFilter =
           filterBy === "all" ||
-          (filterBy === "salud" && professor.specialty.includes("Salud Pública")) ||
-          (filterBy === "administracion" && professor.specialty.includes("Administración")) ||
-          (filterBy === "principal" && professor.sede === "PRINCIPAL") ||
-          (filterBy === "filial" && professor.sede === "FILIAL");
+          (filterBy === "activo" && professor.n_estado === 1) ||
+          (filterBy === "inactivo" && professor.n_estado === 0) ||
+          (filterBy === "contratado" && professor.condicion === "C") ||
+          (filterBy === "nombrado" && professor.condicion === "N");
 
         return matchesSearch && matchesFilter;
       })
       .sort((a, b) => {
         switch (sortBy) {
-          case "rating":
-            return b.rating - a.rating;
           case "name":
-            return a.name.localeCompare(b.name);
-          case "students":
-            return b.totalStudents - a.totalStudents;
-          case "punctuality":
-            return b.punctuality - a.punctuality;
+            return a.c_apepat.localeCompare(b.c_apepat);
+          case "dni":
+            return a.c_dni.localeCompare(b.c_dni);
+          case "estado":
+            return b.n_estado - a.n_estado;
+          case "condicion":
+            return a.condicion.localeCompare(b.condicion);
           default:
             return 0;
         }
       });
-  }, [searchTerm, sortBy, filterBy]);
+  }, [professorsData, searchTerm, sortBy, filterBy]);
 
   // Métricas calculadas
   const totalProfessors = professorsData.length;
-  const averageRating = (professorsData.reduce((sum, p) => sum + p.rating, 0) / totalProfessors).toFixed(1);
-  const averagePunctuality = Math.round(professorsData.reduce((sum, p) => sum + p.punctuality, 0) / totalProfessors);
+  const activeProfessors = professorsData.filter(p => p.n_estado === 1).length;
+  const contractedProfessors = professorsData.filter(p => p.condicion === "C").length;
+
+  if (isLoading) {
+    return <p className="text-center text-purple-600 mt-10">Cargando profesores...</p>;
+  }
+
+  if (isError) {
+    return <p className="text-center text-red-600 mt-10">Error al cargar profesores.</p>;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-100">
@@ -123,7 +79,7 @@ export default function TeacherPage() {
           </h1>
         </div>
 
-        {/* Estadísticas mejoradas */}
+        {/* Estadísticas */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="bg-white p-4 shadow-lg rounded-xl border border-purple-100 hover:shadow-xl transition-all duration-300">
             <div className="flex items-center justify-between">
@@ -137,38 +93,38 @@ export default function TeacherPage() {
             </div>
           </div>
           
-          <div className="bg-white p-4 shadow-lg rounded-xl border border-yellow-100 hover:shadow-xl transition-all duration-300">
+          <div className="bg-white p-4 shadow-lg rounded-xl border border-green-100 hover:shadow-xl transition-all duration-300">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs font-medium text-gray-500 mb-1">Puntuacion Promedio</p>
-                <p className="text-2xl font-bold text-yellow-600">{averageRating}</p>
+                <p className="text-xs font-medium text-gray-500 mb-1">Profesores Activos</p>
+                <p className="text-2xl font-bold text-green-600">{activeProfessors}</p>
               </div>
-              <div className="w-10 h-10 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-full flex items-center justify-center">
-                <Star className="w-5 h-5 text-white" />
+              <div className="w-10 h-10 bg-gradient-to-r from-green-500 to-green-600 rounded-full flex items-center justify-center">
+                <User className="w-5 h-5 text-white" />
               </div>
             </div>
           </div>
           
-          <div className="bg-white p-4 shadow-lg rounded-xl border border-green-100 hover:shadow-xl transition-all duration-300">
+          <div className="bg-white p-4 shadow-lg rounded-xl border border-blue-100 hover:shadow-xl transition-all duration-300">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs font-medium text-gray-500 mb-1">Puntualidad Promedio</p>
-                <p className="text-2xl font-bold text-green-600">{averagePunctuality}%</p>
+                <p className="text-xs font-medium text-gray-500 mb-1">Contratados</p>
+                <p className="text-2xl font-bold text-blue-600">{contractedProfessors}</p>
               </div>
-              <div className="w-10 h-10 bg-gradient-to-r from-green-500 to-green-600 rounded-full flex items-center justify-center">
-                <Clock className="w-5 h-5 text-white" />
+              <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center">
+                <User className="w-5 h-5 text-white" />
               </div>
             </div>
           </div>
         </div>
 
-        {/* Barra de búsqueda y filtros mejorada */}
+        {/* Barra de búsqueda y filtros */}
         <div className="max-w-6xl mx-auto space-y-3">
           <div className="relative">
             <Search className="absolute top-3 left-3 text-gray-400" size={18} />
             <input
               type="text"
-              placeholder="Buscar por nombre, especialidad o curso..."
+              placeholder="Buscar por nombre, DNI o cargo..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full pl-10 pr-4 py-2 rounded-xl border-2 border-gray-200 shadow-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 text-sm"
@@ -182,12 +138,12 @@ export default function TeacherPage() {
                 onChange={(e) => setSortBy(e.target.value)}
                 className="px-4 py-2 border-2 border-gray-200 rounded-lg text-xs bg-white shadow-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 appearance-none cursor-pointer"
               >
-                <option value="rating">Ordenar por Puntuación</option>
-                <option value="name">Ordenar por Nombre</option>
-                <option value="students">Ordenar por Estudiantes</option>
-                <option value="punctuality">Ordenar por Puntualidad</option>
+                <option value="name">Ordenar por Apellido</option>
+                <option value="dni">Ordenar por DNI</option>
+                <option value="estado">Ordenar por Estado</option>
+                <option value="condicion">Ordenar por Condición</option>
               </select>
-              <TrendingUp className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400" size={14} />
+              <ChevronRight className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 rotate-90" size={14} />
             </div>
             
             <div className="relative">
@@ -197,22 +153,22 @@ export default function TeacherPage() {
                 className="px-4 py-2 border-2 border-gray-200 rounded-lg text-xs bg-white shadow-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 appearance-none cursor-pointer"
               >
                 <option value="all">Todos los Filtros</option>
-                <option value="salud">Doctorado en Salud Pública</option>
-                <option value="administracion">Doctorado en Administración</option>
-                <option value="principal">Sede Principal</option>
-                <option value="filial">Sede Filial</option>
+                <option value="activo">Estado: Activo</option>
+                <option value="inactivo">Estado: Inactivo</option>
+                <option value="contratado">Condición: Contratado</option>
+                <option value="nombrado">Condición: Nombrado</option>
               </select>
               <Filter className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400" size={14} />
             </div>
           </div>
         </div>
 
-        {/* Lista de Profesores mejorada con scroll */}
+        {/* Lista de Profesores */}
         <div className="h-[calc(100vh-380px)] overflow-y-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pb-4">
-            {filteredProfessors.map((professor) => (
+            {filteredProfessors.map((professor, index) => (
               <div
-                key={professor.id}
+                key={index}
                 className="bg-white p-4 border rounded-xl shadow-md hover:shadow-lg transition-all duration-300 border-gray-100"
               >
                 <div className="space-y-3">
@@ -222,82 +178,50 @@ export default function TeacherPage() {
                       <User className="w-6 h-6 text-white" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-bold text-base text-gray-800 mb-1 line-clamp-2">{professor.name}</h3>
-                      <p className="text-xs text-blue-600 font-medium mb-1">{professor.specialty}</p>
-                      <div className="flex items-center gap-2">
-                        <MapPin size={10} className="text-gray-400" />
-                        <span className="text-xs text-gray-500">Sede: {professor.sede}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Información de contacto */}
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2 text-gray-600">
-                      <div className="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center">
-                        <Mail size={12} />
-                      </div>
-                      <span className="text-xs font-medium truncate">{professor.email}</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-gray-600">
-                      <div className="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center">
-                        <Phone size={12} />
-                      </div>
-                      <span className="text-xs font-medium">{professor.phone}</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-gray-600">
-                      <div className="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center">
-                        <Users size={12} />
-                      </div>
-                      <span className="text-xs font-medium">{professor.totalStudents} estudiantes</span>
-                    </div>
-                  </div>
-
-                  {/* Cursos */}
-                  <div className="bg-gray-50 rounded-lg p-3">
-                    <p className="text-xs font-medium text-gray-700 mb-1 flex items-center gap-1">
-                      <BookOpen size={12} />
-                      Cursos:
-                    </p>
-                    <ul className="space-y-1 text-xs text-gray-600">
-                      {professor.courses.slice(0, 3).map((course, index) => (
-                        <li key={index} className="flex items-start">
-                          <span className="mr-1 text-purple-500">•</span>
-                          <span className="line-clamp-1" title={course}>{course}</span>
-                        </li>
-                      ))}
-                      {professor.courses.length > 3 && (
-                        <li className="text-purple-600 text-xs font-medium">
-                          +{professor.courses.length - 3} más...
-                        </li>
-                      )}
-                    </ul>
-                  </div>
-
-                  {/* Métricas de desempeño */}
-                  <div className="grid grid-cols-2 gap-2">
-                    <div className="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-lg p-2">
-                      <div className="flex items-center justify-between mb-1">
-                        <Star className="w-3 h-3 text-yellow-500" />
-                        <span className="text-xs text-gray-500">({professor.ratingVotes})</span>
-                      </div>
-                      <p className="text-base font-bold text-yellow-600">{professor.rating}</p>
-                      <p className="text-xs text-gray-600">Valoración</p>
-                    </div>
-                    
-                    <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg p-2">
-                      <div className="flex items-center justify-between mb-1">
-                        <Clock className="w-3 h-3 text-green-500" />
-                        <span className={`text-xs px-1 py-0.5 rounded-full ${
-                          professor.punctuality >= 95 ? 'bg-green-100 text-green-800' :
-                          professor.punctuality >= 90 ? 'bg-blue-100 text-blue-800' :
-                          'bg-yellow-100 text-yellow-800'
+                      <h3 className="font-bold text-base text-gray-800 mb-1">
+                        {professor.c_apepat} {professor.c_apemat}
+                      </h3>
+                      <p className="text-sm text-gray-600">{professor.c_nombres}</p>
+                      
+                      <div className="flex flex-wrap gap-2 mt-2">
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                          professor.n_estado === 1 
+                            ? 'bg-green-100 text-green-800' 
+                            : 'bg-gray-100 text-gray-800'
                         }`}>
-                          {professor.punctualityTrend}
+                          {estadoMap[professor.n_estado]}
+                        </span>
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                          professor.condicion === "C" 
+                            ? 'bg-blue-100 text-blue-800' 
+                            : 'bg-yellow-100 text-yellow-800'
+                        }`}>
+                          {condicionMap[professor.condicion]}
                         </span>
                       </div>
-                      <p className="text-base font-bold text-green-600">{professor.punctuality}%</p>
-                      <p className="text-xs text-gray-600">Puntualidad</p>
+                    </div>
+                  </div>
+
+                  {/* Información detallada */}
+                  <div className="space-y-2">
+                    <div className="bg-gray-50 rounded-lg p-3">
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <p className="text-xs font-medium text-gray-500 mb-1">DNI</p>
+                          <p className="text-sm font-semibold">{professor.c_dni}</p>
+                        </div>
+                        <div>
+                          <p className="text-xs font-medium text-gray-500 mb-1">Cargo</p>
+                          <p className="text-sm font-semibold">{professor.cargo}</p>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-3 border border-blue-100">
+                      <div className="flex items-center justify-between">
+                        <p className="text-xs font-medium text-blue-700">Información completa</p>
+                        <ChevronRight className="w-4 h-4 text-blue-500" />
+                      </div>
                     </div>
                   </div>
                 </div>
