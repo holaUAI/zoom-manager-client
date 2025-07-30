@@ -242,7 +242,7 @@ export default function MeetingDetailsModal({ isOpen, onClose, meetingId }) {
                                 <div className="bg-white rounded-lg p-4 border border-gray-200 shadow-sm hover:shadow-md transition-all">
                                     <div className="flex items-center space-x-3 mb-2">
                                         <Star className="h-5 w-5 text-purple-600" />
-                                        <span className="text-sm font-medium text-gray-600">Puntaje anterior</span>
+                                        <span className="text-sm font-medium text-gray-600">Puntaje De la sesión</span>
                                     </div>
                                     <div className="flex items-center">
                                         <span className="text-2xl font-bold text-gray-800">4.5</span>
