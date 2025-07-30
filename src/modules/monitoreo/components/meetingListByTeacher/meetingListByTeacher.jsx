@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useMeetingsByHostId } from '../../hooks/useMeetingsByHostId';
+import { Loading } from '../../../shared/partials/loading/Loading';
 
 const StarRating = ({ rating }) => (
   <div className="flex items-center">
@@ -22,7 +23,7 @@ export const MeetingListByTeacher = ({ hostId }) => {
   const { data, isLoading } = useMeetingsByHostId(hostId);
 
   if (isLoading) {
-    return <p className="text-center text-indigo-600">Cargando reuniones...</p>;
+    return <Loading module="reuniones"/>;
   }
 
   const meetings = data?.data || [];

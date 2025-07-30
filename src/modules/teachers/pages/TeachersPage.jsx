@@ -61,12 +61,97 @@ export default function TeacherPage() {
   const activeProfessors = professorsData.filter(p => p.n_estado === 1).length;
   const contractedProfessors = professorsData.filter(p => p.condicion === "C").length;
 
+  // Pantalla de carga animada
   if (isLoading) {
-    return <p className="text-center text-purple-600 mt-10">Cargando profesores...</p>;
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-100 flex flex-col items-center justify-center">
+        <div className="animate-bounce mb-6">
+          <div className="relative">
+            <div className="w-24 h-24 bg-gradient-to-r from-purple-500 to-indigo-600 rounded-full animate-pulse"></div>
+            <div className="absolute inset-0 flex items-center justify-center">
+              <GraduationCap className="w-12 h-12 text-white animate-pulse" />
+            </div>
+          </div>
+        </div>
+        
+        <div className="text-center space-y-3">
+          <h3 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+            Buscando profesores
+          </h3>
+          <div className="flex justify-center space-x-2">
+            <div className="w-3 h-3 bg-purple-600 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+            <div className="w-3 h-3 bg-purple-600 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+            <div className="w-3 h-3 bg-purple-600 rounded-full animate-bounce" style={{ animationDelay: '600ms' }}></div>
+          </div>
+          <p className="text-purple-700 mt-4 max-w-md">
+            Estamos recopilando la información de todos los docentes. Por favor espere un momento...
+          </p>
+        </div>
+      </div>
+    );
   }
 
+  // Pantalla de error mejorada
   if (isError) {
-    return <p className="text-center text-red-600 mt-10">Error al cargar profesores.</p>;
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-100 flex flex-col items-center justify-center p-4">
+        <div className="relative mb-6 animate-pulse">
+          <div className="w-24 h-24 bg-gradient-to-r from-red-500 to-orange-500 rounded-full flex items-center justify-center">
+            <svg 
+              xmlns="http://www.w3.org/2000/svg" 
+              className="h-16 w-16 text-white" 
+              fill="none" 
+              viewBox="0 0 24 24" 
+              stroke="currentColor"
+            >
+              <path 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                strokeWidth={2} 
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" 
+              />
+            </svg>
+          </div>
+          <div className="absolute -top-2 -right-2">
+            <div className="w-8 h-8 bg-red-600 rounded-full flex items-center justify-center animate-ping">
+              <div className="w-6 h-6 bg-red-600 rounded-full"></div>
+            </div>
+          </div>
+        </div>
+        
+        <div className="text-center max-w-lg">
+          <h3 className="text-2xl font-bold text-red-600 mb-3">
+            ¡Ups! Algo salió mal
+          </h3>
+          <p className="text-gray-700 text-lg mb-6">
+            Estamos teniendo problemas con el servidor. Por favor inténtalo nuevamente más tarde.
+          </p>
+          
+          <button
+            onClick={() => window.location.reload()}
+            className="px-6 py-3 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 font-medium"
+          >
+            <div className="flex items-center space-x-2">
+              <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                className="h-5 w-5" 
+                fill="none" 
+                viewBox="0 0 24 24" 
+                stroke="currentColor"
+              >
+                <path 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round" 
+                  strokeWidth={2} 
+                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" 
+                />
+              </svg>
+              <span>Reintentar ahora</span>
+            </div>
+          </button>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -217,12 +302,6 @@ export default function TeacherPage() {
                       </div>
                     </div>
                     
-                    <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-3 border border-blue-100">
-                      <div className="flex items-center justify-between">
-                        <p className="text-xs font-medium text-blue-700">Información completa</p>
-                        <ChevronRight className="w-4 h-4 text-blue-500" />
-                      </div>
-                    </div>
                   </div>
                 </div>
               </div>

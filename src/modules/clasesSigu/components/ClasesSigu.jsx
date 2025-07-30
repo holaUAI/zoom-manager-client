@@ -6,6 +6,7 @@ import {
   FiClock,
   FiX,
   FiVideo,
+  FiRefreshCw
 } from "react-icons/fi";
 import { useClasesSigu } from "../hooks/useGetAllClasesSigu";
 
@@ -39,7 +40,7 @@ export const ClasesSigu = () => {
   const limit = 10;
 
   // Consumimos el hook con paginación
-  const { data, isLoading, isError } = useClasesSigu(page, limit);
+  const { data, isLoading, isError, refetch } = useClasesSigu(page, limit);
   const reuniones = data?.data || [];
   const totalPages = data?.pages || 1;
 
@@ -96,12 +97,81 @@ export const ClasesSigu = () => {
     setFilterProgram("");
   };
 
+  // Pantalla de carga mejorada
   if (isLoading) {
-    return <p className="text-center text-indigo-600">Cargando clases...</p>;
+    return (
+      <div className="min-h-screen w-full bg-gradient-to-br from-[#f8fafc] to-[#f1f5f9] flex flex-col items-center justify-center p-4">
+        <div className="relative w-32 h-32 mb-8">
+          <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full animate-pulse"></div>
+          <div className="absolute inset-4 bg-white rounded-full flex items-center justify-center">
+            <FiVideo className="text-indigo-600 text-4xl animate-ping" />
+          </div>
+        </div>
+        
+        <div className="text-center space-y-4">
+          <h2 className="text-2xl md:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">
+            Preparando tus clases
+          </h2>
+          <p className="text-gray-600 max-w-md">
+            Estamos organizando todas las clases programadas para ti...
+          </p>
+          
+          <div className="flex justify-center space-x-2">
+            <div className="w-3 h-3 bg-indigo-600 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+            <div className="w-3 h-3 bg-indigo-600 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+            <div className="w-3 h-3 bg-indigo-600 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+          </div>
+        </div>
+      </div>
+    );
   }
 
+  // Pantalla de error mejorada
   if (isError) {
-    return <p className="text-center text-red-600">Error al cargar clases.</p>;
+    return (
+      <div className="min-h-screen w-full bg-gradient-to-br from-[#f8fafc] to-[#f1f5f9] flex flex-col items-center justify-center p-4">
+        <div className="relative mb-8">
+          <div className="w-24 h-24 bg-gradient-to-r from-red-500 to-orange-500 rounded-full flex items-center justify-center animate-pulse">
+            <svg 
+              xmlns="http://www.w3.org/2000/svg" 
+              className="h-16 w-16 text-white" 
+              fill="none" 
+              viewBox="0 0 24 24" 
+              stroke="currentColor"
+            >
+              <path 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                strokeWidth={2} 
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" 
+              />
+            </svg>
+          </div>
+          <div className="absolute -top-2 -right-2">
+            <div className="w-8 h-8 bg-red-600 rounded-full flex items-center justify-center animate-ping">
+              <div className="w-6 h-6 bg-red-600 rounded-full"></div>
+            </div>
+          </div>
+        </div>
+        
+        <div className="text-center max-w-lg">
+          <h3 className="text-2xl font-bold text-red-600 mb-3">
+            ¡Ups! Algo salió mal
+          </h3>
+          <p className="text-gray-700 text-lg mb-6">
+            Estamos teniendo problemas con el servidor. Por favor inténtalo nuevamente.
+          </p>
+          
+          <button
+            onClick={refetch}
+            className="px-6 py-3 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 font-medium flex items-center space-x-2 mx-auto"
+          >
+            <FiRefreshCw className="animate-spin" />
+            <span>Reintentar ahora</span>
+          </button>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -118,7 +188,7 @@ export const ClasesSigu = () => {
         </div>
 
         {/* Barra de búsqueda */}
-        <div className="bg-white rounded-xl shadow-md p-4 mb-6 border border-gray-200 flex flex-col md:flex-row gap-3">
+        <div className="bg-white rounded-xl shadow-lg p-4 mb-6 border border-gray-200 flex flex-col md:flex-row gap-3">
           <div className="relative flex-grow">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <FiSearch className="text-gray-400 text-lg" />
@@ -126,14 +196,14 @@ export const ClasesSigu = () => {
             <input
               type="text"
               placeholder="Buscar por tema, curso o programa..."
-              className="pl-10 pr-4 py-2.5 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="pl-10 pr-4 py-2.5 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
           <button
             onClick={() => setShowFilters(!showFilters)}
-            className="flex items-center justify-center gap-2 px-4 py-2.5 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+            className="flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg hover:opacity-90 transition-all duration-300 shadow-md"
           >
             <FiFilter className="text-lg" />
             <span>Filtrar</span>
@@ -142,29 +212,29 @@ export const ClasesSigu = () => {
 
         {/* Filtros adicionales */}
         {showFilters && (
-          <div className="mb-6 bg-gray-50 p-4 rounded-lg border">
+          <div className="mb-6 bg-gray-50 p-4 rounded-lg border border-gray-200 shadow-sm transition-all duration-300">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium mb-1">
+                <label className="block text-sm font-medium mb-1 text-gray-700">
                   Filtrar por fecha:
                 </label>
                 <input
                   type="date"
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500"
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 transition-all duration-300"
                   value={filterDate}
                   onChange={(e) => setFilterDate(e.target.value)}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">
+                <label className="block text-sm font-medium mb-1 text-gray-700">
                   Filtrar por programa:
                 </label>
                 <select
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500"
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 transition-all duration-300"
                   value={filterProgram}
                   onChange={(e) => setFilterProgram(e.target.value)}
                 >
-                  <option value="">Todos</option>
+                  <option value="">Todos los programas</option>
                   {programOptions.map((program, index) => (
                     <option key={index} value={program}>
                       {program}
@@ -177,7 +247,7 @@ export const ClasesSigu = () => {
               <div className="mt-3 text-right">
                 <button
                   onClick={clearFilters}
-                  className="text-sm text-gray-600 hover:text-gray-800 flex items-center gap-1"
+                  className="text-sm text-gray-600 hover:text-indigo-600 flex items-center gap-1 transition-colors duration-300"
                 >
                   <FiX /> Limpiar filtros
                 </button>
@@ -192,46 +262,61 @@ export const ClasesSigu = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
               {filteredClasses.map((clase, index) => {
                 const { date, time } = formatDate(clase.fechaInicioReunion);
+                const isToday = new Date(clase.fechaInicioReunion).toDateString() === new Date().toDateString();
 
                 return (
                   <div
                     key={index}
-                    className="bg-white rounded-xl shadow-md overflow-hidden border border-[#E5E7EB] hover:shadow-lg transition-all duration-300 relative group"
+                    className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200 hover:shadow-xl transition-all duration-300 relative group"
                   >
-                    <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-[#6246EA] to-[#9333EA]"></div>
+                    {isToday && (
+                      <div className="absolute top-3 right-3 bg-green-100 text-green-800 text-xs font-bold px-2.5 py-1 rounded-full z-10 animate-pulse">
+                        HOY
+                      </div>
+                    )}
+                    
+                    <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-indigo-500 to-purple-600"></div>
 
                     <div className="p-5">
                       <div className="flex justify-between items-start mb-3">
                         <div className="w-[calc(100%-40px)]">
-                          <span className="inline-block px-2.5 py-1 text-xs font-semibold text-[#9333EA] bg-purple-100 rounded-full mb-2">
+                          <span className="inline-block px-2.5 py-1 text-xs font-semibold text-indigo-700 bg-indigo-100 rounded-full mb-2">
                             {clase.c_codesp}
                           </span>
-                          <h2 className="text-lg md:text-lg font-bold text-gray-800 mb-1 truncate group-hover:text-[#6246EA] transition-colors">
+                          <h2 className="text-lg md:text-lg font-bold text-gray-800 mb-1 truncate group-hover:text-indigo-600 transition-colors">
                             {clase.temaReunion}
                           </h2>
+                          <p className="text-xs text-gray-500 truncate">
+                            {clase.c_codcur}
+                          </p>
                         </div>
-                        <div className="p-1.5 bg-gradient-to-br from-[#6246EA] to-[#9333EA] rounded-full text-white flex items-center justify-center">
+                        <div className="p-1.5 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full text-white flex items-center justify-center shadow-md">
                           <FiVideo className="text-sm" />
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-2.5 text-[#0EA5E9] mb-3">
+                      <div className="flex items-center gap-2.5 text-blue-600 mb-3">
                         <div className="bg-blue-100 p-1.5 rounded-full">
-                          <FiCalendar className="text-[#0EA5E9] text-sm" />
+                          <FiCalendar className="text-blue-600 text-sm" />
                         </div>
                         <span className="text-sm">{date}</span>
                       </div>
 
-                      <div className="flex items-center gap-2.5 text-[#0EA5E9] mb-4">
+                      <div className="flex items-center gap-2.5 text-blue-600 mb-4">
                         <div className="bg-blue-100 p-1.5 rounded-full">
-                          <FiClock className="text-[#0EA5E9] text-sm" />
+                          <FiClock className="text-blue-600 text-sm" />
                         </div>
                         <span className="text-sm">{time}</span>
                       </div>
 
-                      <div className="text-sm text-gray-700 mb-3">
-                        <span className="font-semibold">Duración:</span>{" "}
-                        {clase.duracion_minutos} minutos
+                      <div className="flex justify-between items-center">
+                        <div className="text-sm text-gray-700">
+                          <span className="font-semibold">Duración:</span>{" "}
+                          {clase.duracion_minutos} minutos
+                        </div>
+                        <button className="text-xs bg-indigo-50 text-indigo-700 px-3 py-1 rounded-lg hover:bg-indigo-100 transition-colors">
+                          Unirse
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -240,12 +325,15 @@ export const ClasesSigu = () => {
             </div>
 
             {/* Paginación */}
-            <div className="flex justify-center items-center gap-4 mt-6">
+            <div className="flex justify-center items-center gap-4 mt-8">
               <button
                 onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
                 disabled={page === 1}
-                className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 disabled:opacity-50"
+                className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 disabled:opacity-50 transition-colors flex items-center gap-2"
               >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
                 Anterior
               </button>
               <span className="text-gray-700 font-semibold">
@@ -254,15 +342,32 @@ export const ClasesSigu = () => {
               <button
                 onClick={() => setPage((prev) => (prev < totalPages ? prev + 1 : prev))}
                 disabled={page === totalPages}
-                className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 disabled:opacity-50"
+                className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 disabled:opacity-50 transition-colors flex items-center gap-2"
               >
                 Siguiente
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
               </button>
             </div>
           </>
         ) : (
-          <div className="text-center py-12 bg-white rounded-xl shadow-md">
-            <p className="text-gray-600">No se encontraron clases programadas</p>
+          <div className="text-center py-12 bg-white rounded-xl shadow-md border border-gray-200">
+            <div className="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <FiSearch className="text-indigo-600 text-2xl" />
+            </div>
+            <h3 className="text-xl font-semibold text-gray-800 mb-2">No se encontraron clases</h3>
+            <p className="text-gray-600 max-w-md mx-auto mb-6">
+              {searchTerm || filterDate || filterProgram 
+                ? "No hay clases que coincidan con tus criterios de búsqueda" 
+                : "Actualmente no hay clases programadas disponibles"}
+            </p>
+            <button
+              onClick={clearFilters}
+              className="px-4 py-2 bg-indigo-50 text-indigo-700 rounded-lg hover:bg-indigo-100 transition-colors flex items-center gap-2 mx-auto"
+            >
+              <FiX /> Limpiar filtros
+            </button>
           </div>
         )}
       </div>

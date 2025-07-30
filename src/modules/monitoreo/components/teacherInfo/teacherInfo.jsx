@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useHostsMoreInfo } from '../../hooks/useHostsMoreInfo';
+import { Loading } from '../../../shared/partials/loading/Loading';
 
 const StarRating = ({ rating }) => (
   <div className="flex items-center">
@@ -19,7 +20,7 @@ export const TeacherInfo = ({ onSelectTeacher, selectedId, searchTerm = '' }) =>
   const [internalSelectedId, setInternalSelectedId] = useState(null);
   const { data, isLoading } = useHostsMoreInfo();
 
-  if (isLoading) return <p>Cargando docentes...</p>;
+  if (isLoading) return <Loading module="docentes"/>;
 
   const teachers = data?.data || [];
 

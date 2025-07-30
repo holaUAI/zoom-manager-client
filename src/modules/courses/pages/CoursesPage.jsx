@@ -7,7 +7,8 @@ import {
   GraduationCap,
   Building,
   Calendar,
-  ChevronRight
+  ChevronRight,
+  AlertCircle
 } from 'lucide-react';
 import { useCursos } from '../hooks/useGetAllCursos';
 
@@ -53,12 +54,84 @@ export default function CoursesPage() {
       });
   }, [coursesData, searchTerm, filterBy, sortBy]);
 
+  // Pantalla de carga animada (igual al ejemplo de profesores)
   if (isLoading) {
-    return <p className="text-center text-blue-600">Cargando cursos...</p>;
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-100 flex flex-col items-center justify-center">
+        <div className="animate-bounce mb-6">
+          <div className="relative">
+            <div className="w-24 h-24 bg-gradient-to-r from-purple-500 to-indigo-600 rounded-full animate-pulse"></div>
+            <div className="absolute inset-0 flex items-center justify-center">
+              <BookOpen className="w-12 h-12 text-white animate-pulse" />
+            </div>
+          </div>
+        </div>
+        
+        <div className="text-center space-y-3">
+          <h3 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+            Buscando cursos
+          </h3>
+          <div className="flex justify-center space-x-2">
+            <div className="w-3 h-3 bg-purple-600 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+            <div className="w-3 h-3 bg-purple-600 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+            <div className="w-3 h-3 bg-purple-600 rounded-full animate-bounce" style={{ animationDelay: '600ms' }}></div>
+          </div>
+          <p className="text-purple-700 mt-4 max-w-md">
+            Estamos recopilando la información de todos los cursos. Por favor espere un momento...
+          </p>
+        </div>
+      </div>
+    );
   }
 
+  // Pantalla de error mejorada (igual al ejemplo de profesores)
   if (isError) {
-    return <p className="text-center text-red-600">Error al cargar los cursos.</p>;
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-100 flex flex-col items-center justify-center p-4">
+        <div className="relative mb-6 animate-pulse">
+          <div className="w-24 h-24 bg-gradient-to-r from-red-500 to-orange-500 rounded-full flex items-center justify-center">
+            <AlertCircle className="w-16 h-16 text-white" />
+          </div>
+          <div className="absolute -top-2 -right-2">
+            <div className="w-8 h-8 bg-red-600 rounded-full flex items-center justify-center animate-ping">
+              <div className="w-6 h-6 bg-red-600 rounded-full"></div>
+            </div>
+          </div>
+        </div>
+        
+        <div className="text-center max-w-lg">
+          <h3 className="text-2xl font-bold text-red-600 mb-3">
+            ¡Ups! Algo salió mal
+          </h3>
+          <p className="text-gray-700 text-lg mb-6">
+            Estamos teniendo problemas con el servidor. Por favor inténtalo nuevamente más tarde.
+          </p>
+          
+          <button
+            onClick={() => window.location.reload()}
+            className="px-6 py-3 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 font-medium"
+          >
+            <div className="flex items-center space-x-2">
+              <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                className="h-5 w-5" 
+                fill="none" 
+                viewBox="0 0 24 24" 
+                stroke="currentColor"
+              >
+                <path 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round" 
+                  strokeWidth={2} 
+                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" 
+                />
+              </svg>
+              <span>Reintentar ahora</span>
+            </div>
+          </button>
+        </div>
+      </div>
+    );
   }
 
   return (
